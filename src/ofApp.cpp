@@ -13,15 +13,20 @@ void ofApp::setup() {
 	ofSetWindowTitle("Dynamic-obstacles");
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
-	//map = new Enviroment();
-	//car.setup();
+
+	/*ofVec2f start, goal;
+	start.set(100, 100);
+	goal.set(ofGetWidth() - 100, ofGetHeight() - 100);
+	car = new Robot(start);
+	map = new Enviroment(car->getLocation());
+	map->targetSet(goal);*/
 
 	ofVec2f w;
 	w.set(ofGetWidth() / 2, 0);
 	wall = new maze(w);
 	obstacles *ob = wall;
 	obst.push_back(ob);
-	cout << ofGetWidth() << " " << ofGetHeight() << endl;
+
 	w.set(ofGetWidth() / 2, 0.6*ofGetHeight());
 	wall = new maze(w);
 	ob = wall;
@@ -76,7 +81,9 @@ void ofApp::update(){
 	}
 #endif // automatic
 
-	if (map!= NULL) map->update(car,obst);
+	if (map != NULL) {
+		map->update(car, obst);
+	}
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
 	/*std::cout << std::endl << "Update:" << std::chrono::duration<double, std::milli>(end - start).count() << " ms" << std::endl;*/
@@ -99,7 +106,7 @@ void ofApp::draw(){
 	char fpsStr[255]; // an array of chars
 	ofSetColor({ 255,0,0 });
 	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
-	myfont.drawString(fpsStr, ofGetWindowWidth() - 100, ofGetWindowHeight() - 25);
+	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
 	if (map != NULL) {
 		char numNode[255];
 		sprintf(numNode, "Number of nodes: %d", int(map->numofnode()));

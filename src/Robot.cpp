@@ -57,8 +57,9 @@ void Robot::render()
 	ofRotate(ofRadToDeg(atan2(velocity.y, velocity.x)));
 	ofFill();
 	ofDrawRectRounded(-rWidth/2, -rLength/2, rWidth, rLength, 6);
-	ofSetColor(0, 0, 255);
-	ofDrawLine(0, 0, rWidth/2, 0);
+	ofSetColor(250, 180, 0);
+	ofSetLineWidth(3);
+	ofDrawLine(0, 0, rWidth / 2, 0);
 	ofPopMatrix();
 
 	ofSetColor(color, 80);

@@ -184,9 +184,9 @@ inline void Enviroment::render()
 
 	for (auto i : this->nodes)
 	{
-		ofSetColor({ 10,10,10 },150);
+		ofSetColor({ 10,10,10 }, 50);
 
-		if (i.costToStart == inf) ofSetColor({ 200,0,0 },120);
+		if (i.costToStart == inf) ofSetColor({ 200,0,0 },50);
 		
 		ofSetLineWidth(2);
 		if (i.parent != NULL) {
@@ -231,6 +231,7 @@ inline void Enviroment::renderGrid()
 	ofSetColor(20, 130, 0, 50);
 	for (int i = 0; i < ofGetWindowWidth(); i += 5)
 	{
+		cout << i << endl;
 		ofDrawLine(i, 0, i, ofGetWindowHeight());
 	}
 	for (int j = 0; j < ofGetWindowHeight(); j += 5)

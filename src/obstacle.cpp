@@ -5,7 +5,7 @@ obstacles::obstacles()
 	float x = ofRandom(0, ofGetWindowWidth());
 	float y = ofRandom(0, ofGetWindowHeight());
 	location.set(x, y);
-	radius = ofRandom(10, 20);
+	radius = ofRandom(25, 35);
 	color = { 200,50,10 };
 	mass = 3.14*radius*radius;
 }
@@ -107,7 +107,7 @@ movingObst::movingObst()
 #ifdef automatic
 	velocity.set(maxVal*ofRandom(-1,1), maxVal*ofRandom(-1, 1));
 #endif // automatic
-	radius = 25;
+	radius = 30;
 	mass = 3.14*radius*radius;
 	color = { 200,100,20 };
 }
