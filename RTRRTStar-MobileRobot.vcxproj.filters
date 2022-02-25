@@ -67,6 +67,9 @@
     <ClCompile Include="src\SamplingMotionPlanning.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\MultiRobot.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1167,6 +1170,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\SMP.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MultiRobot.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

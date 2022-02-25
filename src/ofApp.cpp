@@ -10,7 +10,7 @@ void ofApp::setup() {
 #endif // DEBUG
 	ofSetVerticalSync(true);
 	ofSetFrameRate(30);
-	ofSetWindowTitle("Dynamic-obstacles");
+	ofSetWindowTitle("Real-time RRT");
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
@@ -106,11 +106,11 @@ void ofApp::draw(){
 	char fpsStr[255]; // an array of chars
 	ofSetColor({ 255,0,0 });
 	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
-	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
+	myfont.drawString(fpsStr, ofGetWindowWidth() - 150, ofGetWindowHeight() - 25);
 	if (map != NULL) {
 		char numNode[255];
 		sprintf(numNode, "Number of nodes: %d", int(map->numofnode()));
-		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
+		myfont.drawString(numNode, ofGetWindowWidth() - 150, ofGetWindowHeight() - 10);
 	}
 
 #ifdef CLK
