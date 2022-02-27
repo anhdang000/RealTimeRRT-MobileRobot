@@ -70,6 +70,9 @@
     <ClCompile Include="src\MultiRobot.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Environment.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1145,9 +1148,6 @@
     <ClInclude Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\libs\opencv\include\opencv2\videoio\legacy\constants_c.h">
       <Filter>addons\ofxOpenCv\libs\opencv\include\opencv2\videoio\legacy</Filter>
     </ClInclude>
-    <ClInclude Include="src\Enviroment.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\InformedRRTstar.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -1173,6 +1173,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\MultiRobot.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Environment.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

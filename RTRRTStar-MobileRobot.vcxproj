@@ -365,6 +365,7 @@ D:\of_v0.11.2_vs2017_release\addons\ofxOpenCv\libs\opencv\include\opencv2\videoi
     <ClCompile Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\src\ofxCvHaarFinder.cpp" />
     <ClCompile Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\src\ofxCvImage.cpp" />
     <ClCompile Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
+    <ClCompile Include="src\Environment.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MultiRobot.cpp" />
     <ClCompile Include="src\obstacle.cpp" />
@@ -678,7 +679,7 @@ D:\of_v0.11.2_vs2017_release\addons\ofxOpenCv\libs\opencv\include\opencv2\videoi
     <ClInclude Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\src\ofxCvImage.h" />
     <ClInclude Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\src\ofxCvShortImage.h" />
     <ClInclude Include="..\..\..\of_v0.11.2_vs2017_release\addons\ofxOpenCv\src\ofxOpenCv.h" />
-    <ClInclude Include="src\Enviroment.h" />
+    <ClInclude Include="src\Environment.h" />
     <ClInclude Include="src\InformedRRTstar.h" />
     <ClInclude Include="src\MultiRobot.h" />
     <ClInclude Include="src\nodeStruct.h" />

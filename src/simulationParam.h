@@ -18,7 +18,7 @@ const float inf = std::numeric_limits<float>::infinity();
 #define automatic
 #endif // !manual
 
-//--------------------------------------------------------------Enviroment.h
+//--------------------------------------------------------------Environment.h
 #define NODE_RADIUS 3
 
 //--------------------------------------------------------------Robot.h

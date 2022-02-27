@@ -13,14 +13,24 @@ public:
 	~MultiRobot() {};
 	void setup();
 	void setup(ofVec2f loc);
+
+	int getNumRobots() { return robots.size(); }
+	// Add agent
+	void addAgent();
+	void addAgent(ofVec2f loc);
 	// Update method
 	void update();
-	//Render method
+	// Render method
 	void render();
-	void fillEnviroment(const list<obstacles*> obst, vector<list<Nodes>> &nodes);
-	void updateEnviroment(vector<list<Nodes>> &nodes, obstacles *obst);
+	// Compute force addition
+	void addForce(vector<ofVec2f> forces);
+	// Controller genrate force toward target
+	void controller(vector<ofVec2f> targets);
+
+	void fillEnvironment(const list<obstacles*> obst, vector<list<Nodes>> &nodes);
+	void updateEnvironment(vector<list<Nodes>> &nodes, obstacles *obst);
 	//--------------------------------------------------------------Variables
-private:
+
 	vector<Robot> robots;
 };
 

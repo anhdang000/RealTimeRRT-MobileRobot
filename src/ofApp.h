@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Enviroment.h"
+#include "Environment.h"
 #define _CRT_SECURE_NO_WARNINGS
-//#include "Robot.h"
+#define BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
 
 class ofApp : public ofBaseApp{
 
@@ -25,8 +25,8 @@ class ofApp : public ofBaseApp{
 	private:
 		ofTrueTypeFont myfont;
 		bool updateFlag = true;
-		Enviroment *map;
-		Robot *car;
+		Environment *map;
+		MultiRobot *multiRobot;
 		std::list<obstacles*> obst;
 		movingObst *OBST;
 		maze *wall;

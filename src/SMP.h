@@ -17,9 +17,9 @@ public:
 	static bool goalFound;
 	static bool sampledInGoalRegion;
 	static bool moveNow;
-	static ofVec2f SMP::start;
+	static ofVec2f start;
 	static ofVec2f goal;
-	static Nodes* SMP::root;
-	static Nodes* SMP::target;
-	static Nodes* SMP::nextTarget;
+	static Nodes* root;
+	static Nodes* target;
+	static Nodes* nextTarget;
 };

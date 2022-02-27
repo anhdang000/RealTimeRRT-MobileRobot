@@ -11,14 +11,14 @@ void ofApp::setup() {
 	ofSetVerticalSync(true);
 	ofSetFrameRate(30);
 	ofSetWindowTitle("Real-time RRT");
-	ofBackground(200,200,200,200);
-	myfont.loadFont("Roboto-Regular.ttf", 10);
+	ofBackground(200, 200, 200, 200);
+	myfont.load("Roboto-Regular.ttf", 10);
 
 	/*ofVec2f start, goal;
 	start.set(100, 100);
 	goal.set(ofGetWidth() - 100, ofGetHeight() - 100);
 	car = new Robot(start);
-	map = new Enviroment(car->getLocation());
+	map = new Environment(car->getLocation());
 	map->targetSet(goal);*/
 
 	ofVec2f w;
@@ -82,7 +82,7 @@ void ofApp::update(){
 #endif // automatic
 
 	if (map != NULL) {
-		map->update(car, obst);
+		map->update(multiRobot, obst);
 	}
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -100,16 +100,17 @@ void ofApp::draw(){
 	for (auto i : obst) {
 		i->render();
 	}
-	if (map != NULL) map->render();
-	if (car!= NULL) car->render();
-
+	if (map != NULL) {
+		map->render();
+		multiRobot->render();
+	}
 	char fpsStr[255]; // an array of chars
 	ofSetColor({ 255,0,0 });
 	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
 	myfont.drawString(fpsStr, ofGetWindowWidth() - 150, ofGetWindowHeight() - 25);
 	if (map != NULL) {
 		char numNode[255];
-		sprintf(numNode, "Number of nodes: %d", int(map->numofnode()));
+		// sprintf(numNode, "Number of nodes: %d", int(map->numofnode()));
 		myfont.drawString(numNode, ofGetWindowWidth() - 150, ofGetWindowHeight() - 10);
 	}
 
@@ -167,13 +168,17 @@ void ofApp::mousePressed(int x, int y, int button){
 	ofVec2f loc;
 	loc.set(x, y);
 	if (button == 0) {
-		if (car != NULL) {
-			map->targetSet(loc);
-		}
+		int idx = map->getNumElements();
+		map->setTarget(loc, idx);
 	}
 	else if (button == 2) {
-		car = new Robot(loc);
-		map = new Enviroment(car->getLocation());
+		if (!map) {
+			multiRobot = new MultiRobot(loc);
+			map = new Environment(loc);
+		}
+		else {
+			multiRobot->addAgent(loc);
+		}
 	}
 	else
 	{
