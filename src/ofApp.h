@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Enviroment.h"
+#include "Environment.h"
+#include "SubEnvironment.h"
 #define _CRT_SECURE_NO_WARNINGS
 //#include "Robot.h"
 
@@ -25,9 +26,12 @@ class ofApp : public ofBaseApp{
 	private:
 		ofTrueTypeFont myfont;
 		bool updateFlag = true;
-		Enviroment *map;
-		Robot *car;
-		std::list<obstacles*> obst;
+		Environment *map1;
+		SubEnvironment *map2;
+		Robot *car1;
+		Robot *car2;
+		list<obstacles*> obst1;
+		list<obstacles*> obst2;
 		movingObst *OBST;
 		maze *wall;
 

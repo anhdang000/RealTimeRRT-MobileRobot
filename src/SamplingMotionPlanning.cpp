@@ -4,18 +4,6 @@
 #include "simulationParam.h"
 #include "RT-RRTstar.h"
 
-bool SMP::goalFound = false;
-bool SMP::sampledInGoalRegion = false;
-bool SMP::moveNow = false;
-bool InformedRRTstar::usingInformedRRTstar = false;
-bool RTRRTstar::goalDefined = false;
-
-ofVec2f SMP::goal;
-ofVec2f SMP::start;
-Nodes* SMP::target = NULL;
-Nodes* SMP::nextTarget = NULL;
-Nodes* SMP::root = NULL;
-std::set<Nodes*, nodes_compare> RTRRTstar::visited_set;
 
 SMP::SMP()
 {
@@ -91,23 +79,23 @@ Nodes SMP::sampler()
 bool SMP::checkCollision(Nodes n1, Nodes n2, list<obstacles*> obst)
 {
 	for (auto i : obst) {
-			if (i->isCollide(n1.location, n2.location)) 	return false;
+		if (i->isCollide(n1.location, n2.location)) 	return false;
 	}
 	return true;
 }
 
 
 
-bool SMP::checkSample(Nodes n,  list<obstacles*> obst)
+bool SMP::checkSample(Nodes n, list<obstacles*> obst)
 {
 	for (auto i : obst) {
-			if (i->isInside(n.location)) return false;		
+		if (i->isInside(n.location)) return false;
 	}
 	return true;
 }
 
 
-void RRTstar::nextIter(std::list<Nodes>& nodes,list<obstacles*> obst, Nodes* u_)
+void RRTstar::nextIter(std::list<Nodes>& nodes, list<obstacles*> obst, Nodes* u_)
 {
 	Nodes u;
 	if (u_ == NULL)
@@ -228,7 +216,7 @@ void InformedRRTstar::nextIter(std::list<Nodes> &nodes, std::list<obstacles*> ob
 
 Nodes InformedRRTstar::sample(float c_max)
 {
-	float c_min = SMP::goal.distance(SMP::start);
+	float c_min = goal.distance(start);
 
 
 	if (std::abs(c_max - c_min) < 100 && usingInformedRRTstar) //Putting a dummy value for now - Robot might not move for some configurations with this value
@@ -270,7 +258,7 @@ void RTRRTstar::nextIter(std::list<Nodes> &nodes, const std::list<obstacles*>& o
 		Nodes* nextPoint = *((++currPath.begin())); //Change the DS for path to vector?
 		changeRoot(nextPoint, nodes);
 
-		RTRRTstar::visited_set.clear();
+		visited_set.clear();
 		pushedToRewireRoot.clear();
 		rewireRoot.clear();
 	}
@@ -365,7 +353,7 @@ void RTRRTstar::updateNextBestPath()
 		if (updatedPath.back()->location.distance(SMP::goal) < currPath.back()->location.distance(SMP::goal))
 			currPath = updatedPath;
 	}
-	
+
 }
 
 Nodes RTRRTstar::sample()
@@ -410,7 +398,7 @@ Nodes* RTRRTstar::getClosestNeighbour(Nodes u, std::list<Nodes>& nodes) //Using 
 			min_dist = dist;
 			near_node = &(*it);
 		}
-		if (u.location.distance(it->location) < rrtstarradius) 
+		if (u.location.distance(it->location) < rrtstarradius)
 		{
 			closestNeighbours.push_back(&(*it));
 		}
@@ -524,47 +512,47 @@ void RTRRTstar::rewireFromRoot(const list<obstacles*> &obst, std::list<Nodes> &n
 		rewireRoot.push_back(SMP::root);
 	}
 
-	while (!rewireRoot.empty() && (ofGetElapsedTimef() - timeKeeper) < allowedTimeRewiring) 
+	while (!rewireRoot.empty() && (ofGetElapsedTimef() - timeKeeper) < allowedTimeRewiring)
+	{
+		Nodes* Xs = rewireRoot.front();
+		rewireRoot.pop_front();
+		std::list<Nodes*> nearNeighbours;
+		nearNeighbours = RRTstar::findClosestNeighbours(*Xs, nodes);
+
+		std::list<Nodes*>::iterator it = nearNeighbours.begin();
+		std::list<Nodes*> safeNeighbours;
+		while (it != nearNeighbours.end())
 		{
-			Nodes* Xs = rewireRoot.front();
-			rewireRoot.pop_front();
-			std::list<Nodes*> nearNeighbours;
-			nearNeighbours = RRTstar::findClosestNeighbours(*Xs, nodes);
+			if (SMP::checkCollision(*Xs, *(*it), obst))
+				safeNeighbours.push_back(*it);
+			it++;
+		}
+		if (safeNeighbours.empty()) continue;
 
-			std::list<Nodes*>::iterator it = nearNeighbours.begin();
-			std::list<Nodes*> safeNeighbours;
-			while (it != nearNeighbours.end())
-			{
-				if (SMP::checkCollision(*Xs, *(*it), obst))
-					safeNeighbours.push_back(*it);
-				it++;
+		safeNeighbours.remove(Xs->parent);
+		it = safeNeighbours.begin();
+		while (it != safeNeighbours.end()) {
+
+			float oldCost = cost(*it);
+			float newCost = cost(Xs) + Xs->location.distance((*it)->location);
+			if (newCost < oldCost) {
+
+				(*it)->prevParent = (*it)->parent;
+				(*it)->parent->children.remove(*it);
+				(*it)->parent = Xs;
+				(*it)->costToStart = newCost;
+				Xs->children.push_back(*it);
 			}
-			if (safeNeighbours.empty()) continue;
-
-			safeNeighbours.remove(Xs->parent);
-			it = safeNeighbours.begin();
-			while (it != safeNeighbours.end()) {
-
-				float oldCost = cost(*it);
-				float newCost = cost(Xs) + Xs->location.distance((*it)->location);
-				if (newCost < oldCost) {
-
-					(*it)->prevParent = (*it)->parent;
-					(*it)->parent->children.remove(*it);
-					(*it)->parent = Xs;
-					(*it)->costToStart = newCost;
-					Xs->children.push_back(*it);
-				}
-				//TODO: take care of restarting the queue part
-				bool found = std::find(pushedToRewireRoot.begin(), pushedToRewireRoot.end(), (*it)) != pushedToRewireRoot.end();
-				if (!found) {
-					rewireRoot.push_back((*it));
-					pushedToRewireRoot.push_back((*it));
-				}
-				it++;
+			//TODO: take care of restarting the queue part
+			bool found = std::find(pushedToRewireRoot.begin(), pushedToRewireRoot.end(), (*it)) != pushedToRewireRoot.end();
+			if (!found) {
+				rewireRoot.push_back((*it));
+				pushedToRewireRoot.push_back((*it));
 			}
+			it++;
 		}
 	}
+}
 
 float RTRRTstar::getHeuristic(Nodes* u) {
 	if (visited_set.find(u) != visited_set.end())

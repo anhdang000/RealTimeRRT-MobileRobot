@@ -15,8 +15,8 @@ class RTRRTstar : public InformedRRTstar
 {
 public:
 	void nextIter(std::list<Nodes> &nodes, const std::list<obstacles*>& obst, Robot* agent);
-	static std::set<Nodes*, nodes_compare> visited_set;
-	static bool goalDefined;
+	std::set<Nodes*, nodes_compare> visited_set;
+	bool goalDefined = false;
 	std::list<Nodes*> currPath;
 private:
 	void expandAndRewire(std::list<Nodes>& nodes, const std::list<obstacles*>& obst);

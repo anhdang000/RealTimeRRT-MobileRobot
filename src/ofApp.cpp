@@ -17,44 +17,50 @@ void ofApp::setup() {
 	/*ofVec2f start, goal;
 	start.set(100, 100);
 	goal.set(ofGetWidth() - 100, ofGetHeight() - 100);
-	car = new Robot(start);
-	map = new Enviroment(car->getLocation());
+	car1 = new Robot(start);
+	map = new Environment(car1->getLocation());
 	map->targetSet(goal);*/
 
 	ofVec2f w;
 	w.set(ofGetWidth() / 2, 0);
 	wall = new maze(w);
 	obstacles *ob = wall;
-	obst.push_back(ob);
+	obst1.push_back(ob);
+	obst2.push_back(ob);
 
 	w.set(ofGetWidth() / 2, 0.6*ofGetHeight());
 	wall = new maze(w);
 	ob = wall;
-	obst.push_back(ob);
+	obst1.push_back(ob);
+	obst2.push_back(ob);
 
 	w.set(ofGetWidth() / 4, 0.4*ofGetHeight());
 	wall = new maze(w, 60, 0.2*ofGetHeight());
 	ob = wall;
-	obst.push_back(ob);
+	obst1.push_back(ob);
+	obst2.push_back(ob);
 
 	w.set(0.75*ofGetWidth(), 0.4*ofGetHeight());
 	wall = new maze(w, 60, 0.2*ofGetHeight());
 	ob = wall;
-	obst.push_back(ob);
+	obst1.push_back(ob);
+	obst2.push_back(ob);
 
 	for (unsigned int i = 0; i < numberOfobst; i++)
 	{
 		obstacles *ob = new obstacles();
 		// OBST = new movingObst();
 		// obstacles *ob = OBST;
-		obst.push_back(ob);
+		obst1.push_back(ob);
+		obst2.push_back(ob);
 	}
 	//
 	OBST = new movingObst();
 	ob = OBST;
-	obst.push_back(ob);
+	obst1.push_back(ob);
+	obst2.push_back(ob);
 
-	cout << "Obst size: " << obst.size() << endl;
+
 
 #ifdef randomSeed
 	std::cout << "RandomSeed:" << randomSeed << endl;
@@ -81,8 +87,11 @@ void ofApp::update(){
 	}
 #endif // automatic
 
-	if (map != NULL) {
-		map->update(car, obst);
+	if (map1 != NULL) {
+		map1->update(car1, obst1);
+	}
+	if (map2 != NULL) {
+		map2->update(car2, obst2);
 	}
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -97,19 +106,23 @@ void ofApp::draw(){
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
 
-	for (auto i : obst) {
-		i->render();
+	list<obstacles*>::iterator it;
+	for (it = obst1.begin(); it != obst1.end(); it++) {
+		(*it)->render();
 	}
-	if (map != NULL) map->render();
-	if (car!= NULL) car->render();
+
+	if (map1 != NULL) map1->render();
+	if (map2 != NULL) map2->render();
+	if (car1 != NULL) car1->render();
+	if (car2 != NULL) car2->render();
 
 	char fpsStr[255]; // an array of chars
 	ofSetColor({ 255,0,0 });
 	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
 	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
-	if (map != NULL) {
+	if (map1 != NULL) {
 		char numNode[255];
-		sprintf(numNode, "Number of nodes: %d", int(map->numofnode()));
+		sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
 		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
 	}
 
@@ -135,7 +148,7 @@ void ofApp::keyPressed(int key){
 	}
 	else if(key=='g')
 	{
-		map->grid = !map->grid;
+		map1->grid = !map1->grid;
 	}
 	else if (key == 'x') {
 		ofImage img;
@@ -167,13 +180,23 @@ void ofApp::mousePressed(int x, int y, int button){
 	ofVec2f loc;
 	loc.set(x, y);
 	if (button == 0) {
-		if (car != NULL) {
-			map->targetSet(loc);
+		if (car1 != NULL) {
+			map1->targetSet(loc);
+		}
+		if (car2 != NULL) {
+			map2->targetSet(loc);
 		}
 	}
 	else if (button == 2) {
-		car = new Robot(loc);
-		map = new Enviroment(car->getLocation());
+		if (car1 == NULL){
+			car1 = new Robot(loc);
+			map1 = new Environment(car1->getLocation());
+		}
+		else if (car2 == NULL) {
+			car2 = new Robot(loc);
+			map2 = new SubEnvironment(car2->getLocation());
+		}
+		
 	}
 	else
 	{

@@ -8,18 +8,18 @@ class SMP
 {
 public:
 	SMP();
-	static void addNode(Nodes n, std::list<Nodes>& nodes);
-	static Nodes* nearestNode(Nodes n, std::list<Nodes>& nodes);
-	static Nodes* nearestNode(Nodes n, std::list<Nodes*>& nodes);
-	static bool checkCollision(Nodes n1, Nodes n2, list<obstacles*> obst);
-	static bool checkSample(Nodes n, list<obstacles*> obst);
-	static Nodes sampler();
-	static bool goalFound;
-	static bool sampledInGoalRegion;
-	static bool moveNow;
-	static ofVec2f SMP::start;
-	static ofVec2f goal;
-	static Nodes* SMP::root;
-	static Nodes* SMP::target;
-	static Nodes* SMP::nextTarget;
+	void addNode(Nodes n, std::list<Nodes>& nodes);
+	Nodes* nearestNode(Nodes n, std::list<Nodes>& nodes);
+	Nodes* nearestNode(Nodes n, std::list<Nodes*>& nodes);
+	bool checkCollision(Nodes n1, Nodes n2, list<obstacles*> obst);
+	bool checkSample(Nodes n, list<obstacles*> obst);
+	Nodes sampler();
+	bool goalFound = false;
+	bool sampledInGoalRegion = false;
+	bool moveNow = false;
+	ofVec2f start;
+	ofVec2f goal;
+	Nodes* root;
+	Nodes* target = NULL;
+	Nodes* nextTarget = NULL;
 };

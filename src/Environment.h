@@ -1,24 +1,25 @@
 #pragma once
-#include"simulationParam.h"
-#include"nodeStruct.h"
-#include"obstacle.h"
-#include<list>
-#include"SMP.h"
-#include"Robot.h"
-#include"RRTstar.h"
-#include"InformedRRTstar.h"
-#include"RT-RRTstar.h"
-#include"ofxGui.h"
+#include "simulationParam.h"
+#include "nodeStruct.h"
+#include "obstacle.h"
+#include <list>
+#include <vector>
+#include "SMP.h"
+#include "Robot.h"
+#include "RRTstar.h"
+#include "InformedRRTstar.h"
+#include "RT-RRTstar.h"
+#include "ofxGui.h"
 //--------------------------------------------------------------class
-class Enviroment
+class Environment
 {
 public:
 	//--------------------------------------------------------------Function
 	// Default constructor  
-	Enviroment() { setup(); };
-	Enviroment(ofVec2f _start) { setup(_start); };
+	Environment() { setup(); };
+	Environment(ofVec2f _start) { setup(_start); };
 	// Default destructor  
-	~Enviroment() {};
+	~Environment() {};
 	// Setup method
 	void setup();
 	void setup(ofVec2f _start);
@@ -26,7 +27,7 @@ public:
 	void targetSet(ofVec2f loc);
 	// Update method
 	void update(Robot *car);
-	// Render method draw nodes in enviroment.
+	// Render method draw nodes in Environment.
 	void render();
 	float numofnode() { return nodes.size(); };
 	void renderGrid();
@@ -42,31 +43,26 @@ protected:
 	std::list<Nodes> nodes;
 	//std::list<obstacles> obst;
 	std::list<Nodes*> path;
-	RRTstar rrtstar;
-	InformedRRTstar irrtstar;
 	RTRRTstar rtrrtstar;
 	bool rrtFlag = true;
 	bool planner = true;
 
 	ofVec2f goal;
 	ofVec2f home;
-	//Robot *car;
-
-	// A list or an array of Obstacles should come here
 
 };
 
-inline void Enviroment::setup()
+inline void Environment::setup()
 {
 	home.set(startx, starty);
 	Nodes start(startx, starty, 0);
 	this->nodes.push_back(start);
-	SMP::start.set(startx, starty);
-	SMP::goalFound = false;
+	rtrrtstar.start.set(startx, starty);
+	rtrrtstar.goalFound = false;
 }
 
 
-inline void Enviroment::setup(ofVec2f _start)
+inline void Environment::setup(ofVec2f _start)
 {
 	gui.setup();
 	gui.add(guiRad.setup("Radius", rrtstarradius, 10, 200));
@@ -76,13 +72,13 @@ inline void Enviroment::setup(ofVec2f _start)
 	Nodes start(home.x, home.y, 0);
 	this->nodes.push_back(start);
 
-	SMP::root = &(this->nodes.front());
+	rtrrtstar.root = &(this->nodes.front());
 	goal.set(goalx, goaly);
-	SMP::start.set(startx, starty);
-	SMP::goalFound = false;
+	rtrrtstar.start.set(startx, starty);
+	rtrrtstar.goalFound = false;
 }
 
-inline void Enviroment::update(Robot *car,list<obstacles*> obst)
+inline void Environment::update(Robot *car,list<obstacles*> obst)
 {
 	//RRTstar - 
 	//rrtstar.nextIter(nodes, obst);
@@ -92,64 +88,30 @@ inline void Enviroment::update(Robot *car,list<obstacles*> obst)
 	//InformedRRTstar::usingInformedRRTstar = true;
 
 	//RTRRTstar-
-	if (car->getLocation().distance(SMP::goal) < converge)
+	if (car->getLocation().distance(rtrrtstar.goal) < converge)
 		planner = false;
 
 	if (planner)
 	{
-		car->fillEnviroment(obst, nodes);
-		car->controller(SMP::root->location);
+		car->fillEnvironment(obst, nodes);
+		car->controller(rtrrtstar.root->location);
 		car->update();
 	}
 
 	rtrrtstar.nextIter(nodes, obst, car);
 
-	if (planner && SMP::target != NULL)
+	if (planner && rtrrtstar.target != NULL)
 	{
 		path = rtrrtstar.currPath;
 		rtrrtstar.currPath.clear();
 	}
-	
-	//Following is Informed RRT-star stuff
-	/*
-	if (SMP::sampledInGoalRegion)
-		SMP::sampledInGoalRegion = false;
-
-	if (SMP::target != NULL && !SMP::moveNow && InformedRRTstar::usingInformedRRTstar)
-	{
-		path.clear();
-		Nodes *pathNode = SMP::target;
-		do
-		{
-			path.push_back(pathNode);
-			pathNode = pathNode->parent;
-		} while (pathNode->parent != NULL);
-		//planner = !planner;
-		path.reverse();
-	}
-	if (SMP::moveNow && InformedRRTstar::usingInformedRRTstar) {
-		std::list<Nodes*>::iterator pathIt = path.begin();
-
-		while(pathIt !=path.end()){
-			if ((*pathIt)->alive) {
-				car->controller((*pathIt)->location);
-				float dist= (*pathIt)->location.distance(car->getLocation());
-				if (dist < 2.0) (*pathIt)->alive = false;
-				break;
-			}
-			pathIt++;
-		}
-		if(pathIt!=path.end())
-		car->update();
-
-	}*/
 }
 
-inline void Enviroment::targetSet(ofVec2f loc)
+inline void Environment::targetSet(ofVec2f loc)
 {
 	goal = loc;
-	SMP::goal = goal;
-	RTRRTstar::goalDefined = true;
+	rtrrtstar.goal = goal;
+	rtrrtstar.goalDefined = true;
 	
 	planner = true;
 	std::list<Nodes>::iterator it = nodes.begin();
@@ -157,18 +119,18 @@ inline void Enviroment::targetSet(ofVec2f loc)
 	{
 		if ((*it).location.distance(loc) < converge)
 		{
-			SMP::target = &(*it);
+			rtrrtstar.target = &(*it);
 			return;
 		}
 		it++;
 	}
-	SMP::goalFound = false;
-	SMP::target = NULL;
+	rtrrtstar.goalFound = false;
+	rtrrtstar.target = NULL;
 	path.clear();
 	goalin = true;
 }
 
-inline void Enviroment::render()
+inline void Environment::render()
 {
 	//gui.draw();
 	ofEnableAlphaBlending();
@@ -225,7 +187,7 @@ inline void Enviroment::render()
 	ofDisableAlphaBlending();
 }
 
-inline void Enviroment::renderGrid()
+inline void Environment::renderGrid()
 {
 	ofEnableAlphaBlending();
 	ofSetColor(20, 130, 0, 50);
