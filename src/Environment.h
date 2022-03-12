@@ -146,7 +146,7 @@ inline void Environment::render()
 
 	for (auto i : this->nodes)
 	{
-		ofSetColor({ 10,10,10 }, 50);
+		ofSetColor({ 10,10,150 }, 50);
 
 		if (i.costToStart == inf) ofSetColor({ 200,0,0 },50);
 		
@@ -157,22 +157,11 @@ inline void Environment::render()
 			pt.set(i.parent->location.x, i.parent->location.y);line.addVertex(pt);
 			line.draw();
 		}
-		//ofSetColor({ 10,10,250 },80);
 		ofSetLineWidth(1);
-		//if (i.prevParent != NULL) {
-		//	
-		//	ofPoint pt; ofPolyline line;
-		//	pt.set(i.location.x, i.location.y); line.addVertex(pt);
-		//	pt.set(i.prevParent->location.x, i.prevParent->location.y); line.addVertex(pt);
-		//	line.draw();
-		//}
-		//int hue = i.alive ? 130 : 80;
-		//ofSetColor(i.color, hue);
-		//ofDrawCircle(i.location.x, i.location.y, NODE_RADIUS);
 	}
 	if (!path.empty())
 	{
-		ofSetColor({ 10,250,10 });
+		ofSetColor({ 30,195,152 });
 		ofSetLineWidth(5);
 		for (auto i : path) {
 			if (i->parent != NULL) {

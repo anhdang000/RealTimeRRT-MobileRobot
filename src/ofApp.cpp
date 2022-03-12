@@ -80,10 +80,8 @@ void ofApp::update(){
 #endif // DEBUG
 
 #ifdef automatic
-	for (auto i : obst) {
-		i->move(obst);
-		//cout << "location: " << i->loc() << "Radius: " << i->rad() << endl;
-		//cout << i.getX() << "  " << i.getY() << endl;
+	for (auto i : obst1) {
+		i->move(obst1);
 	}
 #endif // automatic
 

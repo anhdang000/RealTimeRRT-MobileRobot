@@ -23,7 +23,7 @@ void Robot::setup(ofVec2f loc)
 	accelaration.set(0.0, 0.0);
 	maxVelocity.set(mVal, mVal);
 	maxForce.set(mForce, mForce);
-	color = { 50,145,80 };
+	color = { ofRandom(0,250),ofRandom(0,250) ,ofRandom(0,250) };
 }
 
 void Robot::update()
@@ -117,84 +117,3 @@ void Robot::updateEnvironment(list<Nodes>& node,obstacles *obst)
 		it++;
 	}
 }
-
-//
-//inline void quadCopter::fly(Nodes *& nodes)
-//{
-//	if (!wTraj.empty())
-//	{
-//		int index = 0;
-//		bool prio = false;
-//		Vector2f temp('inf', 'inf');
-//		for (auto i : wTraj)
-//		{
-//			if (nodes->waypoint[i.index].alive)
-//			{
-//				if (!nodes->waypoint[i.index].stress) nodes->waypoint[i.index].color = color;
-//				else nodes->waypoint[i.index].color = { 255,0,0 };
-//				Vector2f min = this->location - nodes->waypoint[i.index].location;
-//				if (min.norm()<temp.norm() && nodes->waypoint[i.index].priority)
-//				{
-//					temp = min;
-//					index = i.index;
-//					prio = true;
-//				}
-//			}
-//		}
-//		if (prio) {
-//			controller(nodes->waypoint[index].location);
-//		}
-//		//else if (!prio) {
-//		//	int index = 0;
-//		//	Vector2f temp('inf', 'inf');
-//		//	for (auto i : wTraj)
-//		//	{
-//		//		if (nodes->waypoint[i.index].alive)
-//		//		{
-//		//			if (!nodes->waypoint[i.index].stress) nodes->waypoint[i.index].color = color;
-//		//			else nodes->waypoint[i.index].color = { 255,0,0 };
-//		//			Vector2f min = this->location - nodes->waypoint[i.index].location;
-//		//			if (min.norm()<temp.norm() && nodes->waypoint[i.index].priority)
-//		//			{
-//		//				temp = min;
-//		//				index = i.index;
-//		//				prio = true;
-//		//			}
-//		//		}
-//		//	}
-//		//	controller(nodes->waypoint[index].location);
-//		//}
-//
-//		//list<waypoints>::iterator it;
-//		//waypoints target = findAlive(wTraj,nodes);
-//		//controller(target.location);
-//
-//	}
-//	else
-//	{
-//		//Vector2f mouse(ofGetMouseX(), ofGetMouseY());
-//		//controller(mouse);
-//		Vector2f HOME(0, 0);
-//		controller(HOME);
-//	}
-//}
-
-//
-//inline waypoints quadCopter::findAlive(list<waypoints> &TRAJ, node *nodes)
-//{
-//	list<waypoints>::iterator it;
-//	it = TRAJ.begin();
-//	if (TRAJ.size() <= 1)
-//	{
-//		return *it;
-//	}
-//	if (nodes->waypoint[it->index].alive)
-//	{
-//		return *it;
-//	}
-//	else
-//	{
-//		TRAJ.pop_front();
-//		return findAlive(TRAJ, nodes);
-//	}
-//}

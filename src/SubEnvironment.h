@@ -132,7 +132,7 @@ inline void SubEnvironment::render()
 
 	for (auto i : this->nodes)
 	{
-		ofSetColor({ 10,10,10 }, 50);
+		ofSetColor({ 10,150,10 }, 50);
 
 		if (i.costToStart == inf) ofSetColor({ 200,0,0 }, 50);
 
@@ -143,12 +143,11 @@ inline void SubEnvironment::render()
 			pt.set(i.parent->location.x, i.parent->location.y); line.addVertex(pt);
 			line.draw();
 		}
-		//ofSetColor({ 10,10,250 },80);
 		ofSetLineWidth(1);
 	}
 	if (!path.empty())
 	{
-		ofSetColor({ 10,250,10 });
+		ofSetColor({ 39,76,119 });
 		ofSetLineWidth(5);
 		for (auto i : path) {
 			if (i->parent != NULL) {
