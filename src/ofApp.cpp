@@ -14,13 +14,7 @@ void ofApp::setup() {
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
-	/*ofVec2f start, goal;
-	start.set(100, 100);
-	goal.set(ofGetWidth() - 100, ofGetHeight() - 100);
-	car1 = new Robot(start);
-	map = new Environment(car1->getLocation());
-	map->targetSet(goal);*/
-
+	
 	ofVec2f w;
 	w.set(ofGetWidth() / 2, 0);
 	wall = new maze(w);
@@ -59,7 +53,7 @@ void ofApp::setup() {
 	ob = OBST;
 	obst1.push_back(ob);
 	obst2.push_back(ob);
-
+	
 
 
 #ifdef randomSeed
@@ -84,6 +78,19 @@ void ofApp::update(){
 		i->move(obst1);
 	}
 #endif // automatic
+	// Process simulation video
+	cv::Mat frame;
+	bool isSuccess = vid_capture.read(frame);
+
+	if (isSuccess) {
+		/*vector<vector<cv::Point2f>> markerCorners, rejectedCandidates;
+		vector<int> markerIds;
+		cv::aruco::detectMarkers(frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
+		*/
+	}
+	else {
+		vid_capture.open(vid_source);
+	}
 
 	if (map1 != NULL) {
 		map1->update(car1, obst1);
@@ -103,7 +110,7 @@ void ofApp::draw(){
 #ifdef CLK
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
-
+	
 	list<obstacles*>::iterator it;
 	for (it = obst1.begin(); it != obst1.end(); it++) {
 		(*it)->render();
@@ -114,15 +121,16 @@ void ofApp::draw(){
 	if (car1 != NULL) car1->render();
 	if (car2 != NULL) car2->render();
 
-	char fpsStr[255]; // an array of chars
-	ofSetColor({ 255,0,0 });
-	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
-	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
 	if (map1 != NULL) {
 		char numNode[255];
 		sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
 		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
 	}
+	
+	char fpsStr[255]; // an array of chars
+	ofSetColor({ 255,0,0 });
+	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
+	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
 
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();

@@ -1,10 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
+#include "opencv2/opencv.hpp"
+#include <opencv2/aruco.hpp>
+#include <filesystem>
 #include "Environment.h"
 #include "SubEnvironment.h"
+#include <thread>
+
 #define _CRT_SECURE_NO_WARNINGS
-//#include "Robot.h"
 
 class ofApp : public ofBaseApp{
 
@@ -34,6 +38,11 @@ class ofApp : public ofBaseApp{
 		list<obstacles*> obst2;
 		movingObst *OBST;
 		maze *wall;
-
 		double updateTime = 0, drawTime = 0;
+
+		string vid_source = "bin\\data\\simulation_AR_0.avi";
+		cv::VideoCapture vid_capture = cv::VideoCapture(vid_source);
+		int frameIdx = 0;
+		cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
+		cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
 };
