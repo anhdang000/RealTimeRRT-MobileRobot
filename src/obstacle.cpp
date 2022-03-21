@@ -13,7 +13,8 @@ obstacles::obstacles()
 obstacles::obstacles(ofVec2f loc)
 {
 	location = loc;
-	radius = ofRandom(10, 20);
+	// radius = ofRandom(20, 40);
+	radius = 30;
 	color = { 200,50,10 };
 	mass = 3.14*radius*radius;
 }
