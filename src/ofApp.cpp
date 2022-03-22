@@ -9,7 +9,7 @@ void ofApp::setup() {
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
 	ofSetVerticalSync(true);
-	ofSetFrameRate(120);
+	ofSetFrameRate(30);
 	ofSetWindowTitle("Dynamic-obstacles");
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
@@ -54,7 +54,10 @@ void ofApp::setup() {
 	obst1.push_back(ob);
 	obst2.push_back(ob);
 	
-
+#ifdef readARMarkers
+	std::thread t1(&ofApp::readAR, this);
+	t1.detach();
+#endif
 
 #ifdef randomSeed
 	std::cout << "RandomSeed:" << randomSeed << endl;
@@ -64,6 +67,42 @@ void ofApp::setup() {
 	auto end = std::chrono::steady_clock::now();
 	std::cout << std::endl << "Setup:" << std::chrono::duration<double, std::milli>(end - start).count() << " ms" << std::endl;
 #endif // DEBUG
+}
+
+void ofApp::readAR() {
+	// Process simulation video
+	cv::Mat frame;
+	while (true) {
+		bool isSuccess = vid_capture.read(frame);
+		if (isSuccess) {
+			// Process AR markers
+			cv::aruco::detectMarkers(frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
+
+			// Compute obstacles' positions
+			obst1.clear();
+			obst2.clear();
+			for (auto markerCorner : markerCorners) {
+				ofVec2f loc;
+				loc.set(markerCorner[0].x, markerCorner[0].y);
+				obstacles *ob = new obstacles(loc);
+				obst1.push_back(ob);
+				obst2.push_back(ob);
+			}
+			// For debugging
+			/*cv::Mat outputImage = frame.clone();
+			cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
+			char fileName[50];
+			sprintf(fileName, "bin\\data\\frames\\frame_%d.jpg", frameIdx);
+			std::cout << "Writing AR results in: " << fileName << std::endl;
+			cv::imwrite(fileName, outputImage);*/
+
+			//frameIdx++;
+		}
+		else {
+			vid_capture.open(vid_source);
+			//frameIdx = 0;
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -78,43 +117,6 @@ void ofApp::update(){
 		i->move(obst1);
 	}
 #endif // automatic
-
-#ifdef readARMarkers
-	// Process simulation video
-	cv::Mat frame;
-	bool isSuccess = vid_capture.read(frame);
-
-	if (isSuccess) {
-		// Process AR markers
-		vector<vector<cv::Point2f>> markerCorners, rejectedCandidates;
-		vector<int> markerIds;
-		cv::aruco::detectMarkers(frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
-		cv::Mat outputImage = frame.clone();
-		cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
-		
-		// Compute obstacles' positions
-		obst1.clear();
-		obst2.clear();
-		for (auto markerCorner : markerCorners){
-			ofVec2f loc;
-			loc.set(markerCorner[0].x, markerCorner[0].y);
-			obstacles *ob = new obstacles(loc);
-			obst1.push_back(ob);
-			obst2.push_back(ob);
-		}
-		// For debugging
-		/*char fileName[50];
-		sprintf(fileName, "bin\\data\\frames\\frame_%d.jpg", frameIdx);
-		std::cout << "Writing AR results in: " << fileName << std::endl;
-		cv::imwrite(fileName, outputImage);*/
-
-		frameIdx++;
-	}
-	else {
-		vid_capture.open(vid_source);
-		frameIdx = 0;
-	}
-#endif
 
 	if (map1 != NULL) {
 		map1->update(car1, obst1);

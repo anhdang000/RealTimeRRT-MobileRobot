@@ -19,6 +19,7 @@ const float inf = std::numeric_limits<float>::infinity();
 #endif // !manual
 
 #define readARMarkers
+
 //--------------------------------------------------------------Environment.h
 #define NODE_RADIUS 3
 
