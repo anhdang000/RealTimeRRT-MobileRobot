@@ -81,13 +81,27 @@ void ofApp::readAR() {
 			// Compute obstacles' positions
 			obst1.clear();
 			obst2.clear();
+			ofVec2f loc;
+			obstacles *ob;
 			for (auto markerCorner : markerCorners) {
-				ofVec2f loc;
 				loc.set(markerCorner[0].x, markerCorner[0].y);
-				obstacles *ob = new obstacles(loc);
+				ob = new obstacles(loc);
 				obst1.push_back(ob);
 				obst2.push_back(ob);
 			}
+
+			// Set mutual obstacle
+			if (car1 != NULL) {
+				loc.set(car1->x(), car1->y());
+				ob = new obstacles(loc);
+				obst2.push_back(ob);
+			}
+			if (car2 != NULL) {
+				loc.set(car2->x(), car2->y());
+				ob = new obstacles(loc);
+				obst1.push_back(ob);
+			}
+
 			// For debugging
 			/*cv::Mat outputImage = frame.clone();
 			cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
@@ -96,11 +110,11 @@ void ofApp::readAR() {
 			std::cout << "Writing AR results in: " << fileName << std::endl;
 			cv::imwrite(fileName, outputImage);*/
 
-			//frameIdx++;
+			// frameIdx++;
 		}
 		else {
 			vid_capture.open(vid_source);
-			//frameIdx = 0;
+			// frameIdx = 0;
 		}
 	}
 }
@@ -138,8 +152,15 @@ void ofApp::draw(){
 #endif // DEBUG
 	
 	list<obstacles*>::iterator it;
-	for (it = obst1.begin(); it != obst1.end(); it++) {
-		(*it)->render();
+	if (car2 != NULL) {
+		for (it = obst1.begin(); std::distance(it, obst1.end()) > 1; it++) {
+			(*it)->render();
+		}
+	}
+	else {
+		for (it = obst1.begin(); std::distance(it, obst1.end()) > 0; it++) {
+			(*it)->render();
+		}
 	}
 
 	if (map1 != NULL) map1->render();
