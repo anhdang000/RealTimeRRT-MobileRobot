@@ -170,10 +170,25 @@ void ofApp::draw(){
 
 	if (map1 != NULL) {
 		char numNode[255];
+		ofSetColor({ 234,97,50 });
 		sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
 		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
 	}
 	
+	if (car1 != NULL) {
+		char car1Infos[255];
+		ofSetColor({ 9, 139, 50 });
+		sprintf(car1Infos, "Robot 1: (x, y) = (%.2f, %.2f); orientation = %.2f", car1->x(), car1->y(), car1->getAngle());
+		myfont.drawString(car1Infos, 50, ofGetWindowHeight() - 30);
+	}
+
+	if (car2 != NULL) {
+		char car2Infos[255];
+		ofSetColor({ 9, 102, 139 });
+		sprintf(car2Infos, "Robot 2: (x, y) = (%.2f, %.2f); orientation = %.2f", car2->x(), car2->y(), car2->getAngle());
+		myfont.drawString(car2Infos, 50, ofGetWindowHeight() - 10);
+	}
+
 	char fpsStr[255]; // an array of chars
 	ofSetColor({ 255,0,0 });
 	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));

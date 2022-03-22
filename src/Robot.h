@@ -29,6 +29,8 @@ public:
 	float x() { return location.x; }
 	// Return Y cordinate
 	float y() { return location.y; }
+	//Return orientation angle
+	float getAngle() { return ofRadToDeg(atan2(velocity.y, velocity.x)); }
 	// Return scanning accuracy of Robot
 	float accu() { return accuracy; }
 	// Return scanning radius of Robot
