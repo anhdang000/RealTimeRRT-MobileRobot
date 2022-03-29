@@ -169,7 +169,7 @@ void movingObst::move(std::list<obstacles*> obst)
 		velocity.x = velocity.x*-1;
 	}
 
-	location += velocity;
+	location += velocity*0.08;
 }
 #endif // automatic
 bool movingObst::isCollide(ofVec2f n1, ofVec2f n2)

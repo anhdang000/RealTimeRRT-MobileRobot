@@ -15,7 +15,7 @@ void ofApp::setup() {
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
 	
-	ofVec2f w;
+	/*ofVec2f w;
 	w.set(ofGetWidth() / 2, 0);
 	wall = new maze(w);
 	obstacles *ob = wall;
@@ -38,23 +38,20 @@ void ofApp::setup() {
 	wall = new maze(w, 60, 0.2*ofGetHeight());
 	ob = wall;
 	obst1.push_back(ob);
-	obst2.push_back(ob);
+	obst2.push_back(ob);*/
 
 	for (unsigned int i = 0; i < numberOfobst; i++)
 	{
 		obstacles *ob = new obstacles();
-		// OBST = new movingObst();
-		// obstacles *ob = OBST;
 		obst1.push_back(ob);
 		obst2.push_back(ob);
+		if (i < 3) {
+			OBST = new movingObst();
+			obstacles *ob = OBST;
+			obst1.push_back(ob);
+			obst2.push_back(ob);
+		}
 	}
-	//
-	OBST = new movingObst();
-	ob = OBST;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-	
-
 
 #ifdef randomSeed
 	std::cout << "RandomSeed:" << randomSeed << endl;
@@ -77,6 +74,9 @@ void ofApp::update(){
 	for (auto i : obst1) {
 		i->move(obst1);
 	}
+	for (auto i : obst2) {
+		i->move(obst2);
+	}
 #endif // automatic
 
 #ifdef readARMarkers
@@ -95,13 +95,26 @@ void ofApp::update(){
 		// Compute obstacles' positions
 		obst1.clear();
 		obst2.clear();
+		ofVec2f loc;
+		obstacles *ob
 		for (auto markerCorner : markerCorners){
-			ofVec2f loc;
 			loc.set(markerCorner[0].x, markerCorner[0].y);
-			obstacles *ob = new obstacles(loc);
+			ob = new obstacles(loc);
 			obst1.push_back(ob);
 			obst2.push_back(ob);
 		}
+		// Set mutual obstacle
+		if (car1 != NULL) {
+			loc.set(car1->x(), car1->y());
+			ob = new obstacles(loc);
+			obst2.push_back(ob);
+		}
+		if (car2 != NULL) {
+			loc.set(car2->x(), car2->y());
+			ob = new obstacles(loc);
+			obst1.push_back(ob);
+		}
+
 		// For debugging
 		/*char fileName[50];
 		sprintf(fileName, "bin\\data\\frames\\frame_%d.jpg", frameIdx);

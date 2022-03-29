@@ -9,7 +9,7 @@
 const float inf = std::numeric_limits<float>::infinity();
 
 //--------------------------------------------------------------ofApp.h
-#define numberOfobst 10
+#define numberOfobst 7
 
 //--------------------------------------------------------------obstracle.h
 #define manual
@@ -18,7 +18,7 @@ const float inf = std::numeric_limits<float>::infinity();
 #define automatic
 #endif // !manual
 
-#define readARMarkers
+// #define readARMarkers
 //--------------------------------------------------------------Environment.h
 #define NODE_RADIUS 3
 
