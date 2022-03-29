@@ -7,6 +7,7 @@
 #include "Environment.h"
 #include "SubEnvironment.h"
 #include <thread>
+#include <functional>
 
 #define _CRT_SECURE_NO_WARNINGS
 

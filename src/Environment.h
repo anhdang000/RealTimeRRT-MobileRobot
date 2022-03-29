@@ -10,6 +10,8 @@
 #include "InformedRRTstar.h"
 #include "RT-RRTstar.h"
 #include "ofxGui.h"
+#include <thread>
+
 //--------------------------------------------------------------class
 class Environment
 {
@@ -61,7 +63,6 @@ inline void Environment::setup()
 	rtrrtstar.goalFound = false;
 }
 
-
 inline void Environment::setup(ofVec2f _start)
 {
 	gui.setup();
@@ -78,16 +79,7 @@ inline void Environment::setup(ofVec2f _start)
 	rtrrtstar.goalFound = false;
 }
 
-inline void Environment::update(Robot *car,list<obstacles*> obst)
-{
-	//RRTstar - 
-	//rrtstar.nextIter(nodes, obst);
-
-	//Informed RRT*-
-	//irrtstar.nextIter(nodes, obst);
-	//InformedRRTstar::usingInformedRRTstar = true;
-
-	//RTRRTstar-
+inline void Environment::update(Robot *car,list<obstacles*> obst) {
 	if (car->getLocation().distance(rtrrtstar.goal) < converge)
 		planner = false;
 

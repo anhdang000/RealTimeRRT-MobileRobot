@@ -14,45 +14,12 @@ void ofApp::setup() {
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
-	
-	ofVec2f w;
-	w.set(ofGetWidth() / 2, 0);
-	wall = new maze(w);
-	obstacles *ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
-	w.set(ofGetWidth() / 2, 0.6*ofGetHeight());
-	wall = new maze(w);
-	ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
-	w.set(ofGetWidth() / 4, 0.4*ofGetHeight());
-	wall = new maze(w, 60, 0.2*ofGetHeight());
-	ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
-	w.set(0.75*ofGetWidth(), 0.4*ofGetHeight());
-	wall = new maze(w, 60, 0.2*ofGetHeight());
-	ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
 	for (unsigned int i = 0; i < numberOfobst; i++)
 	{
 		obstacles *ob = new obstacles();
-		// OBST = new movingObst();
-		// obstacles *ob = OBST;
 		obst1.push_back(ob);
 		obst2.push_back(ob);
 	}
-	//
-	OBST = new movingObst();
-	ob = OBST;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
 	
 #ifdef readARMarkers
 	std::thread t1(&ofApp::readAR, this);
@@ -131,7 +98,6 @@ void ofApp::update(){
 		i->move(obst1);
 	}
 #endif // automatic
-
 	if (map1 != NULL) {
 		map1->update(car1, obst1);
 	}
@@ -152,13 +118,8 @@ void ofApp::draw(){
 #endif // DEBUG
 	
 	list<obstacles*>::iterator it;
-	if (car2 != NULL) {
+	if (car2 != NULL && obst1.size() > 0) {
 		for (it = obst1.begin(); std::distance(it, obst1.end()) > 1; it++) {
-			(*it)->render();
-		}
-	}
-	else {
-		for (it = obst1.begin(); std::distance(it, obst1.end()) > 0; it++) {
 			(*it)->render();
 		}
 	}
@@ -177,14 +138,14 @@ void ofApp::draw(){
 	
 	if (car1 != NULL) {
 		char car1Infos[255];
-		ofSetColor({ 9, 139, 50 });
+		ofSetColor({ 9, 102, 139 });
 		sprintf(car1Infos, "Robot 1: (x, y) = (%.2f, %.2f); orientation = %.2f", car1->x(), car1->y(), car1->getAngle());
 		myfont.drawString(car1Infos, 50, ofGetWindowHeight() - 30);
 	}
 
 	if (car2 != NULL) {
 		char car2Infos[255];
-		ofSetColor({ 9, 102, 139 });
+		ofSetColor({ 9, 139, 50 });
 		sprintf(car2Infos, "Robot 2: (x, y) = (%.2f, %.2f); orientation = %.2f", car2->x(), car2->y(), car2->getAngle());
 		myfont.drawString(car2Infos, 50, ofGetWindowHeight() - 10);
 	}

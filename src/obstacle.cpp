@@ -15,7 +15,7 @@ obstacles::obstacles(ofVec2f loc)
 	location = loc;
 	// radius = ofRandom(20, 40);
 	radius = 30;
-	color = { 200,50,10 };
+	color = { 250,107,107 };
 	mass = 3.14*radius*radius;
 }
 

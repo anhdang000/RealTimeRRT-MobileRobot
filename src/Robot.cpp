@@ -62,10 +62,10 @@ void Robot::render()
 	ofDrawLine(0, 0, rWidth / 2, 0);
 	ofPopMatrix();
 
-	ofSetColor(color, 80);
+	/*ofSetColor(color, 80);
 	ofDrawCircle(location.x, location.y, ofGetFrameNum() % int(scanRadius));
 	ofNoFill();
-	ofDisableAlphaBlending();
+	ofDisableAlphaBlending();*/
 }
 
 void Robot::addForce(ofVec2f force)
