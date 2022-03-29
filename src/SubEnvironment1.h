@@ -11,15 +11,15 @@
 #include "RT-RRTstar.h"
 #include "ofxGui.h"
 //--------------------------------------------------------------class
-class Environment
+class SubEnvironment1
 {
 public:
 	//--------------------------------------------------------------Function
 	// Default constructor  
-	Environment() { setup(); };
-	Environment(ofVec2f _start) { setup(_start); };
+	SubEnvironment1() { setup(); };
+	SubEnvironment1(ofVec2f _start) { setup(_start); };
 	// Default destructor  
-	~Environment() {};
+	~SubEnvironment1() {};
 	// Setup method
 	void setup();
 	void setup(ofVec2f _start);
@@ -27,15 +27,14 @@ public:
 	void targetSet(ofVec2f loc);
 	// Update method
 	void update(Robot *car);
-	// Render method draw nodes in Environment.
+	// Render method draw nodes in SubEnvironment1.
 	void render();
 	float numofnode() { return nodes.size(); };
 	void renderGrid();
 	//--------------------------------------------------------------Variables
 	bool grid = false;
 	bool goalin = false;
-	ofxFloatSlider guiRad,guiEpsilon;
-	ofxPanel gui;
+
 private:
 	//--------------------------------------------------------------Variables
 protected:
@@ -49,10 +48,9 @@ protected:
 
 	ofVec2f goal;
 	ofVec2f home;
-
 };
 
-inline void Environment::setup()
+inline void SubEnvironment1::setup()
 {
 	home.set(startx, starty);
 	Nodes start(startx, starty, 0);
@@ -62,11 +60,8 @@ inline void Environment::setup()
 }
 
 
-inline void Environment::setup(ofVec2f _start)
+inline void SubEnvironment1::setup(ofVec2f _start)
 {
-	gui.setup();
-	gui.add(guiRad.setup("Radius", rrtstarradius, 10, 200));
-	gui.add(guiEpsilon.setup("Epsilon",epsilon , 5, 150));
 	home = _start;
 
 	Nodes start(home.x, home.y, 0);
@@ -78,16 +73,8 @@ inline void Environment::setup(ofVec2f _start)
 	rtrrtstar.goalFound = false;
 }
 
-inline void Environment::update(Robot *car,list<obstacles*> obst)
+inline void SubEnvironment1::update(Robot *car, list<obstacles*> obst)
 {
-	//RRTstar - 
-	//rrtstar.nextIter(nodes, obst);
-
-	//Informed RRT*-
-	//irrtstar.nextIter(nodes, obst);
-	//InformedRRTstar::usingInformedRRTstar = true;
-
-	//RTRRTstar-
 	if (car->getLocation().distance(rtrrtstar.goal) < converge)
 		planner = false;
 
@@ -107,12 +94,12 @@ inline void Environment::update(Robot *car,list<obstacles*> obst)
 	}
 }
 
-inline void Environment::targetSet(ofVec2f loc)
+inline void SubEnvironment1::targetSet(ofVec2f loc)
 {
 	goal = loc;
 	rtrrtstar.goal = goal;
 	rtrrtstar.goalDefined = true;
-	
+
 	planner = true;
 	std::list<Nodes>::iterator it = nodes.begin();
 	while (it != nodes.end())
@@ -130,15 +117,14 @@ inline void Environment::targetSet(ofVec2f loc)
 	goalin = true;
 }
 
-inline void Environment::render()
+inline void SubEnvironment1::render()
 {
-	//gui.draw();
 	ofEnableAlphaBlending();
 
-	ofSetColor({150, 0, 255});
+	ofSetColor({ 150, 0, 255 });
 	if (goalin) {
 		ofFill();
-		ofDrawCircle(goal.x, goal.y, NODE_RADIUS+2);
+		ofDrawCircle(goal.x, goal.y, NODE_RADIUS + 2);
 		ofNoFill();
 		ofSetLineWidth(2);
 		ofDrawCircle(goal.x, goal.y, converge);
@@ -146,22 +132,22 @@ inline void Environment::render()
 
 	for (auto i : this->nodes)
 	{
-		ofSetColor({ 10,10,150 }, 50);
+		ofSetColor({ 150,10,10 }, 50);
 
-		if (i.costToStart == inf) ofSetColor({ 5,5,5 },50);
-		
+		if (i.costToStart == inf) ofSetColor({ 5,5,5 }, 50);
+
 		ofSetLineWidth(2);
 		if (i.parent != NULL) {
-			ofPoint pt;ofPolyline line;
-			pt.set(i.location.x, i.location.y);line.addVertex(pt);
-			pt.set(i.parent->location.x, i.parent->location.y);line.addVertex(pt);
+			ofPoint pt; ofPolyline line;
+			pt.set(i.location.x, i.location.y); line.addVertex(pt);
+			pt.set(i.parent->location.x, i.parent->location.y); line.addVertex(pt);
 			line.draw();
 		}
 		ofSetLineWidth(1);
 	}
 	if (!path.empty())
 	{
-		ofSetColor({ 39,76,119 });
+		ofSetColor({ 100,0,0 });
 		ofSetLineWidth(5);
 		for (auto i : path) {
 			if (i->parent != NULL) {
@@ -172,22 +158,6 @@ inline void Environment::render()
 			}
 		}
 		ofSetLineWidth(1);
-	}
-	ofDisableAlphaBlending();
-}
-
-inline void Environment::renderGrid()
-{
-	ofEnableAlphaBlending();
-	ofSetColor(20, 130, 0, 50);
-	for (int i = 0; i < ofGetWindowWidth(); i += 5)
-	{
-		cout << i << endl;
-		ofDrawLine(i, 0, i, ofGetWindowHeight());
-	}
-	for (int j = 0; j < ofGetWindowHeight(); j += 5)
-	{
-		ofDrawLine(0, j, ofGetWindowWidth(), j);
 	}
 	ofDisableAlphaBlending();
 }

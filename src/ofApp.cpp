@@ -14,42 +14,18 @@ void ofApp::setup() {
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
-	
-	/*ofVec2f w;
-	w.set(ofGetWidth() / 2, 0);
-	wall = new maze(w);
-	obstacles *ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
-	w.set(ofGetWidth() / 2, 0.6*ofGetHeight());
-	wall = new maze(w);
-	ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
-	w.set(ofGetWidth() / 4, 0.4*ofGetHeight());
-	wall = new maze(w, 60, 0.2*ofGetHeight());
-	ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);
-
-	w.set(0.75*ofGetWidth(), 0.4*ofGetHeight());
-	wall = new maze(w, 60, 0.2*ofGetHeight());
-	ob = wall;
-	obst1.push_back(ob);
-	obst2.push_back(ob);*/
-
-	for (unsigned int i = 0; i < numberOfobst; i++)
+	for (unsigned int i = 0; i < numStaObst; i++)
 	{
 		obstacles *ob = new obstacles();
 		obst1.push_back(ob);
 		obst2.push_back(ob);
-		if (i < 3) {
+		obst3.push_back(ob);
+		if (i < numMovObst) {
 			OBST = new movingObst();
 			obstacles *ob = OBST;
 			obst1.push_back(ob);
 			obst2.push_back(ob);
+			obst3.push_back(ob);
 		}
 	}
 
@@ -76,6 +52,9 @@ void ofApp::update(){
 	}
 	for (auto i : obst2) {
 		i->move(obst2);
+	}
+	for (auto i : obst3) {
+		i->move(obst3);
 	}
 #endif // automatic
 
@@ -135,6 +114,9 @@ void ofApp::update(){
 	if (map2 != NULL) {
 		map2->update(car2, obst2);
 	}
+	if (map3 != NULL) {
+		map3->update(car3, obst3);
+	}
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
 	/*std::cout << std::endl << "Update:" << std::chrono::duration<double, std::milli>(end - start).count() << " ms" << std::endl;*/
@@ -155,8 +137,11 @@ void ofApp::draw(){
 
 	if (map1 != NULL) map1->render();
 	if (map2 != NULL) map2->render();
+	if (map3 != NULL) map3->render();
+
 	if (car1 != NULL) car1->render();
 	if (car2 != NULL) car2->render();
+	if (car3 != NULL) car3->render();
 
 	if (map1 != NULL) {
 		char numNode[255];
@@ -229,6 +214,9 @@ void ofApp::mousePressed(int x, int y, int button){
 		if (car2 != NULL) {
 			map2->targetSet(loc);
 		}
+		if (car3 != NULL) {
+			map3->targetSet(loc);
+		}
 	}
 	else if (button == 2) {
 		if (car1 == NULL){
@@ -238,6 +226,10 @@ void ofApp::mousePressed(int x, int y, int button){
 		else if (car2 == NULL) {
 			car2 = new Robot(loc);
 			map2 = new SubEnvironment(car2->getLocation());
+		}
+		else if (car3 == NULL) {
+			car3 = new Robot(loc);
+			map3 = new SubEnvironment1(car3->getLocation());
 		}
 		
 	}

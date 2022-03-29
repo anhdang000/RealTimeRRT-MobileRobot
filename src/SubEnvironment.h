@@ -134,7 +134,7 @@ inline void SubEnvironment::render()
 	{
 		ofSetColor({ 10,150,10 }, 50);
 
-		if (i.costToStart == inf) ofSetColor({ 200,0,0 }, 50);
+		if (i.costToStart == inf) ofSetColor({ 5,5,5 }, 50);
 
 		ofSetLineWidth(2);
 		if (i.parent != NULL) {
@@ -147,7 +147,7 @@ inline void SubEnvironment::render()
 	}
 	if (!path.empty())
 	{
-		ofSetColor({ 39,76,119 });
+		ofSetColor({ 30,195,152 });
 		ofSetLineWidth(5);
 		for (auto i : path) {
 			if (i->parent != NULL) {

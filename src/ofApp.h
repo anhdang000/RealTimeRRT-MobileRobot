@@ -6,6 +6,7 @@
 #include <filesystem>
 #include "Environment.h"
 #include "SubEnvironment.h"
+#include "SubEnvironment1.h"
 #include <thread>
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -32,10 +33,13 @@ class ofApp : public ofBaseApp{
 		bool updateFlag = true;
 		Environment *map1;
 		SubEnvironment *map2;
+		SubEnvironment1 *map3;
 		Robot *car1;
 		Robot *car2;
+		Robot *car3;
 		list<obstacles*> obst1;
 		list<obstacles*> obst2;
+		list<obstacles*> obst3;
 		movingObst *OBST;
 		maze *wall;
 		double updateTime = 0, drawTime = 0;

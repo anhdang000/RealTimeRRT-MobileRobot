@@ -9,10 +9,11 @@
 const float inf = std::numeric_limits<float>::infinity();
 
 //--------------------------------------------------------------ofApp.h
-#define numberOfobst 7
+#define numStaObst 7
+#define numMovObst 4
 
 //--------------------------------------------------------------obstracle.h
-#define manual
+//#define manual
 #define obstMaxVelocity 10
 #ifndef manual
 #define automatic
