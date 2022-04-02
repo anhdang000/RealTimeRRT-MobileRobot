@@ -41,6 +41,7 @@ class ofApp : public ofBaseApp{
 		list<obstacles*> obst2;
 		list<obstacles*> obst3;
 		movingObst *OBST;
+		int numObs = numStaObst + numMovObst;
 		maze *wall;
 		double updateTime = 0, drawTime = 0;
 

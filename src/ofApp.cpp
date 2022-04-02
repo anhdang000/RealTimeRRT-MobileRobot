@@ -75,7 +75,7 @@ void ofApp::update(){
 		obst1.clear();
 		obst2.clear();
 		ofVec2f loc;
-		obstacles *ob
+		obstacles *ob;
 		for (auto markerCorner : markerCorners){
 			loc.set(markerCorner[0].x, markerCorner[0].y);
 			ob = new obstacles(loc);
@@ -108,6 +108,55 @@ void ofApp::update(){
 	}
 #endif
 
+	// Set mutual obstacles
+	ofVec2f loc;
+	obstacles *ob;
+
+	// Obstacle 1: assign car2 + car3 as obstacles
+	while (obst1.size() > numObs) {
+		obst1.pop_back();
+	}
+	if (car2 != NULL) {
+		loc.set(car2->x(), car2->y());
+		ob = new obstacles(loc);
+		obst1.push_back(ob);
+	}
+	if (car3 != NULL) {
+		loc.set(car3->x(), car3->y());
+		ob = new obstacles(loc);
+		obst1.push_back(ob);
+	}
+
+	// Obstacle 2: assign car3 + car1 as obstacles
+	while (obst2.size() > numObs) {
+		obst2.pop_back();
+	}
+	if (car3 != NULL) {
+		loc.set(car3->x(), car3->y());
+		ob = new obstacles(loc);
+		obst2.push_back(ob);
+	}
+	if (car1 != NULL) {
+		loc.set(car1->x(), car1->y());
+		ob = new obstacles(loc);
+		obst2.push_back(ob);
+	}
+
+	// Obstacle 3: assign car1 + car2 as obstacles
+	while (obst3.size() > numObs) {
+		obst3.pop_back();
+	}
+	if (car1 != NULL) {
+		loc.set(car1->x(), car1->y());
+		ob = new obstacles(loc);
+		obst3.push_back(ob);
+	}
+	if (car2 != NULL) {
+		loc.set(car2->x(), car2->y());
+		ob = new obstacles(loc);
+		obst3.push_back(ob);
+	}
+
 	if (map1 != NULL) {
 		map1->update(car1, obst1);
 	}
@@ -131,7 +180,7 @@ void ofApp::draw(){
 #endif // DEBUG
 	
 	list<obstacles*>::iterator it;
-	for (it = obst1.begin(); it != obst1.end(); it++) {
+	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
 		(*it)->render();
 	}
 
