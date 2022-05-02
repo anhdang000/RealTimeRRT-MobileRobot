@@ -32,6 +32,7 @@ void Robot::update()
 	velocity = (velocity.length() <= maxVelocity.length()) ? velocity : (velocity.normalized() *mVal);
 	location += velocity;
 	accelaration *= 0.0;
+	// std::cout << velocity.x << "\t" << velocity.y << std::endl;
 	pt.set(location.x, location.y);
 	line.addVertex(pt);
 }

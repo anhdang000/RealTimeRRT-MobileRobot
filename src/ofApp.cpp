@@ -257,14 +257,21 @@ void ofApp::mousePressed(int x, int y, int button){
 	ofVec2f loc;
 	loc.set(x, y);
 	if (button == 0) {
-		if (car1 != NULL) {
+		std::cout << currGoalSet << std::endl;
+		if (car1 != NULL && currGoalSet == 1) {
 			map1->targetSet(loc);
 		}
-		if (car2 != NULL) {
+		if (car2 != NULL && currGoalSet == 2) {
 			map2->targetSet(loc);
 		}
-		if (car3 != NULL) {
+		if (car3 != NULL && currGoalSet == 3) {
 			map3->targetSet(loc);
+		}
+		if (currGoalSet > 3) {
+			currGoalSet = 1;
+		}
+		else {
+			currGoalSet++;
 		}
 	}
 	else if (button == 2) {

@@ -121,7 +121,7 @@ inline void SubEnvironment1::render()
 {
 	ofEnableAlphaBlending();
 
-	ofSetColor({ 150, 0, 255 });
+	ofSetColor({ 0, 128, 42 });
 	if (goalin) {
 		ofFill();
 		ofDrawCircle(goal.x, goal.y, NODE_RADIUS + 2);
