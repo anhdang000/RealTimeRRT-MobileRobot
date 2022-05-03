@@ -14,6 +14,7 @@ public:
 #endif // automatic
 	virtual void render();
 	virtual ofVec2f loc(){ return location; }
+	void setLocation(ofVec2f loc);
 	virtual float rad() { return radius; }
 	float getX() { return location.x;}
 	float getY() { return location.y;}

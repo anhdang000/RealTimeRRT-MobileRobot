@@ -144,11 +144,11 @@ inline void Environment::render()
 		ofDrawCircle(goal.x, goal.y, converge);
 	}
 
-	for (auto i : this->nodes)
+	/*for (auto i : this->nodes)
 	{
-		ofSetColor({ 10,10,150 }, 50);
+		ofSetColor({ 10,10,150 }, 20);
 
-		if (i.costToStart == inf) ofSetColor({ 5,5,5 },50);
+		if (i.costToStart == inf) ofSetColor({ 5,5,5 }, 20);
 		
 		ofSetLineWidth(2);
 		if (i.parent != NULL) {
@@ -158,7 +158,7 @@ inline void Environment::render()
 			line.draw();
 		}
 		ofSetLineWidth(1);
-	}
+	}*/
 	if (!path.empty())
 	{
 		ofSetColor({ 39,76,119 });

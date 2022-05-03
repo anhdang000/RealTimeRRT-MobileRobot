@@ -8,6 +8,8 @@
 #include "SubEnvironment.h"
 #include "SubEnvironment1.h"
 #include <thread>
+#include <fstream>
+#include <ctime>
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -17,6 +19,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void drawAtInit();
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
@@ -51,4 +54,10 @@ class ofApp : public ofBaseApp{
 		int frameIdx = 0;
 		cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
 		cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
+
+		// Data storage
+		std::chrono::system_clock::time_point initTime;
+		std::ofstream posErrorFile_1;
+		std::ofstream posErrorFile_2;
+		std::ofstream posErrorFile_3;
 };

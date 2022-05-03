@@ -19,6 +19,10 @@ obstacles::obstacles(ofVec2f loc)
 	mass = 3.14*radius*radius;
 }
 
+void obstacles::setLocation(ofVec2f loc) {
+	location = loc;
+}
+
 obstacles::~obstacles()
 {
 }
@@ -169,7 +173,7 @@ void movingObst::move(std::list<obstacles*> obst)
 		velocity.x = velocity.x*-1;
 	}
 
-	location += velocity*0.08;
+	location += velocity*0.04;
 }
 #endif // automatic
 bool movingObst::isCollide(ofVec2f n1, ofVec2f n2)

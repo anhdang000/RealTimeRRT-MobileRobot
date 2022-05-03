@@ -8,27 +8,51 @@ void ofApp::setup() {
 #ifdef CLK
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
+	// Storage files
+	posErrorFile_1.open("bin\\data\\pos_errors_1.txt");
+	posErrorFile_2.open("bin\\data\\pos_errors_2.txt");
+	posErrorFile_3.open("bin\\data\\pos_errors_3.txt");
+
+	// Display
 	ofSetVerticalSync(true);
 	ofSetFrameRate(120);
 	ofSetWindowTitle("Dynamic-obstacles");
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
-	for (unsigned int i = 0; i < numStaObst; i++)
+	// Robots and Goals setup
+	car1 = new Robot(ofVec2f(100, 100));
+	map1 = new Environment(car1->getLocation());
+	map1->targetSet(ofVec2f(700, 100));
+	initTime = std::chrono::system_clock::now();
+
+	car2 = new Robot(ofVec2f(100, 400));
+	map2 = new SubEnvironment(car2->getLocation());
+	map2->targetSet(ofVec2f(700, 400));
+
+	car3 = new Robot(ofVec2f(100, 700));
+	map3 = new SubEnvironment1(car3->getLocation());
+	map3->targetSet(ofVec2f(700, 700));
+	
+	// Obstacles
+	vector<ofVec2f> obsLoc = { ofVec2f(400, 100), ofVec2f(400, 400), ofVec2f(400, 700) };
+	for (unsigned int i = 0; i < obsLoc.size(); i++)
 	{
-		obstacles *ob = new obstacles();
+		obstacles *ob = new obstacles(obsLoc[i]);
 		obst1.push_back(ob);
 		obst2.push_back(ob);
 		obst3.push_back(ob);
-		if (i < numMovObst) {
-			OBST = new movingObst();
-			obstacles *ob = OBST;
-			obst1.push_back(ob);
-			obst2.push_back(ob);
-			obst3.push_back(ob);
-		}
 	}
 
+	for (unsigned int i = 0; i < numMovObst; i++) {
+		OBST = new movingObst();
+		obstacles *ob = OBST;
+		obst1.push_back(ob);
+		obst2.push_back(ob);
+		obst3.push_back(ob);
+	}
+
+	drawAtInit();
 #ifdef randomSeed
 	std::cout << "RandomSeed:" << randomSeed << endl;
 #endif
@@ -166,6 +190,15 @@ void ofApp::update(){
 	if (map3 != NULL) {
 		map3->update(car3, obst3);
 	}
+
+	// Write to files
+	// "error____num_nodes____timestamp"
+	std::chrono::duration<double> diff = std::chrono::system_clock::now() - initTime;
+	posErrorFile_1 << car1->y() - 100 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
+	posErrorFile_2 << car2->y() - 400 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_3 << car3->y() - 700 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
+
+
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
 	/*std::cout << std::endl << "Update:" << std::chrono::duration<double, std::milli>(end - start).count() << " ms" << std::endl;*/
@@ -178,7 +211,10 @@ void ofApp::draw(){
 #ifdef CLK
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
-	
+	// Draw standard path
+	ofDrawLine(100, 100, 700, 100);
+	ofDrawLine(100, 400, 700, 400);
+	ofDrawLine(100, 700, 700, 700);
 	list<obstacles*>::iterator it;
 	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
 		(*it)->render();
@@ -191,17 +227,6 @@ void ofApp::draw(){
 	if (car1 != NULL) car1->render();
 	if (car2 != NULL) car2->render();
 	if (car3 != NULL) car3->render();
-
-	if (map1 != NULL) {
-		char numNode[255];
-		sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
-		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
-	}
-	
-	char fpsStr[255]; // an array of chars
-	ofSetColor({ 255,0,0 });
-	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
-	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
 
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -218,6 +243,29 @@ void ofApp::draw(){
 }
 
 //--------------------------------------------------------------
+void ofApp::drawAtInit() {
+#ifdef CLK
+	auto start = std::chrono::steady_clock::now();
+#endif // DEBUG
+	list<obstacles*>::iterator it;
+	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
+		(*it)->render();
+	}
+
+	if (map1 != NULL) map1->render();
+	if (map2 != NULL) map2->render();
+	if (map3 != NULL) map3->render();
+
+	if (car1 != NULL) car1->render();
+	if (car2 != NULL) car2->render();
+	if (car3 != NULL) car3->render();
+
+	ofImage img;
+	img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+	img.save("screenshots/at_init.jpg");
+}
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == 'p')
 	{
@@ -230,7 +278,10 @@ void ofApp::keyPressed(int key){
 	else if (key == 'x') {
 		ofImage img;
 		img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-		img.save("screenshot.png");
+		char name[50];
+		sprintf(name, "screenshots/screen_%d.jpg", std::time(0));
+		std::cout << "Saved screen at: " << name << std::endl;
+		img.save(name);
 	}
 #ifdef manual
 	OBST->move(key);
@@ -254,39 +305,9 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	ofVec2f loc;
-	loc.set(x, y);
 	if (button == 0) {
-		std::cout << currGoalSet << std::endl;
-		if (car1 != NULL && currGoalSet == 1) {
-			map1->targetSet(loc);
-		}
-		if (car2 != NULL && currGoalSet == 2) {
-			map2->targetSet(loc);
-		}
-		if (car3 != NULL && currGoalSet == 3) {
-			map3->targetSet(loc);
-		}
-		if (currGoalSet > 3) {
-			currGoalSet = 1;
-		}
-		else {
-			currGoalSet++;
-		}
 	}
 	else if (button == 2) {
-		if (car1 == NULL){
-			car1 = new Robot(loc);
-			map1 = new Environment(car1->getLocation());
-		}
-		else if (car2 == NULL) {
-			car2 = new Robot(loc);
-			map2 = new SubEnvironment(car2->getLocation());
-		}
-		else if (car3 == NULL) {
-			car3 = new Robot(loc);
-			map3 = new SubEnvironment1(car3->getLocation());
-		}
 		
 	}
 	else
