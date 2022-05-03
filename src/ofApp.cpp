@@ -212,6 +212,7 @@ void ofApp::draw(){
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
 	// Draw standard path
+	ofSetColor({ 150, 50, 25 });
 	ofDrawLine(100, 100, 700, 100);
 	ofDrawLine(100, 400, 700, 400);
 	ofDrawLine(100, 700, 700, 700);
@@ -247,6 +248,12 @@ void ofApp::drawAtInit() {
 #ifdef CLK
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
+	// Draw standard path
+	ofSetColor({ 150, 50, 25 });
+	ofDrawLine(100, 100, 700, 100);
+	ofDrawLine(100, 400, 700, 400);
+	ofDrawLine(100, 700, 700, 700);
+
 	list<obstacles*>::iterator it;
 	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
 		(*it)->render();
