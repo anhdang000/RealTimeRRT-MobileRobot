@@ -37,6 +37,15 @@ void Robot::update()
 	line.addVertex(pt);
 }
 
+float Robot::computeError(ofVec2f start, ofVec2f goal) {
+	float pathLength = start.distance(goal);
+	float toStart = location.distance(start);
+	float toGoal = location.distance(goal);
+	float p = (pathLength + toStart + toGoal) / 2;
+	float S = std::sqrt((p*(p - pathLength)*(p - toStart)*(p - toGoal)));
+	float error = 2 * S / pathLength;
+	return error;
+}
 void Robot::render()
 {
 

@@ -21,6 +21,7 @@ public:
 	void addForce(ofVec2f force);
 	//Controller genrate force toward target
 	void controller(ofVec2f target);
+	float computeError(ofVec2f p1, ofVec2f p2);
 	//Find Path from assign node
 	//void fly(Nodes *&nodes);
 	// Return state of Robot

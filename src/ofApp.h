@@ -40,6 +40,14 @@ class ofApp : public ofBaseApp{
 		Robot *car1;
 		Robot *car2;
 		Robot *car3;
+
+		// Starts and goals
+		ofVec2f start1;
+		ofVec2f goal1;
+		ofVec2f start2;
+		ofVec2f goal2;
+		ofVec2f start3;
+		ofVec2f goal3;
 		list<obstacles*> obst1;
 		list<obstacles*> obst2;
 		list<obstacles*> obst3;

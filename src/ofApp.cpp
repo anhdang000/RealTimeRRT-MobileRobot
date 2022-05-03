@@ -21,19 +21,27 @@ void ofApp::setup() {
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
 	// Robots and Goals setup
-	car1 = new Robot(ofVec2f(100, 100));
+	start1.set(100, 100);
+	goal1.set(700, 400);
+	car1 = new Robot(start1);
 	map1 = new Environment(car1->getLocation());
-	map1->targetSet(ofVec2f(700, 100));
+	map1->targetSet(goal1);
+
+	start2.set(100, 400);
+	goal2.set(700, 400);
+	car2 = new Robot(start2);
+	map2 = new SubEnvironment(car2->getLocation());
+	map2->targetSet(goal2);
+
+	start3.set(100, 700);
+	goal3.set(700, 400);
+	car3 = new Robot(start3);
+	map3 = new SubEnvironment1(car3->getLocation());
+	map3->targetSet(goal3);
+	
+	// Start time
 	initTime = std::chrono::system_clock::now();
 
-	car2 = new Robot(ofVec2f(100, 400));
-	map2 = new SubEnvironment(car2->getLocation());
-	map2->targetSet(ofVec2f(700, 400));
-
-	car3 = new Robot(ofVec2f(100, 700));
-	map3 = new SubEnvironment1(car3->getLocation());
-	map3->targetSet(ofVec2f(700, 700));
-	
 	// Obstacles
 	vector<ofVec2f> obsLoc = { ofVec2f(400, 100), ofVec2f(400, 400), ofVec2f(400, 700) };
 	for (unsigned int i = 0; i < obsLoc.size(); i++)
@@ -194,9 +202,12 @@ void ofApp::update(){
 	// Write to files
 	// "error____num_nodes____timestamp"
 	std::chrono::duration<double> diff = std::chrono::system_clock::now() - initTime;
-	posErrorFile_1 << car1->y() - 100 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
-	posErrorFile_2 << car2->y() - 400 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
-	posErrorFile_3 << car3->y() - 700 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
+	float error1 = car1->computeError(start1, goal1);
+	float error2 = car2->computeError(start2, goal2);
+	float error3 = car3->computeError(start3, goal3);
+	posErrorFile_1 << error1 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
+	posErrorFile_2 << error2 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_3 << error3 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
 
 
 #ifdef CLK
@@ -211,10 +222,13 @@ void ofApp::draw(){
 #ifdef CLK
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
-	// Draw standard path
-	ofDrawLine(100, 100, 700, 100);
-	ofDrawLine(100, 400, 700, 400);
-	ofDrawLine(100, 700, 700, 700);
+	// Draw standard paths
+	ofSetColor({ 150, 50, 25 });
+	ofDrawLine(start1.x, start1.y, goal1.x, goal1.y);
+	ofDrawLine(start2.x, start2.y, goal2.x, goal2.y);
+	ofDrawLine(start3.x, start3.y, goal3.x, goal3.y);
+
+	// Obstacles
 	list<obstacles*>::iterator it;
 	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
 		(*it)->render();
@@ -247,6 +261,12 @@ void ofApp::drawAtInit() {
 #ifdef CLK
 	auto start = std::chrono::steady_clock::now();
 #endif // DEBUG
+	// Draw standard paths
+	ofSetColor({ 150, 50, 25 });
+	ofDrawLine(start1.x, start1.y, goal1.x, goal1.y);
+	ofDrawLine(start2.x, start2.y, goal2.x, goal2.y);
+	ofDrawLine(start3.x, start3.y, goal3.x, goal3.y);
+
 	list<obstacles*>::iterator it;
 	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
 		(*it)->render();
