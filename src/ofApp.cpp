@@ -43,7 +43,7 @@ void ofApp::setup() {
 	initTime = std::chrono::system_clock::now();
 
 	// Obstacles
-	vector<ofVec2f> obsLoc = { ofVec2f(400, 100), ofVec2f(400, 400), ofVec2f(400, 700) };
+	vector<ofVec2f> obsLoc = { ofVec2f(400, 250), ofVec2f(400, 400), ofVec2f(400, 550) };
 	for (unsigned int i = 0; i < obsLoc.size(); i++)
 	{
 		obstacles *ob = new obstacles(obsLoc[i]);
