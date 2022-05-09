@@ -37,7 +37,7 @@ void Robot::update()
 	line.addVertex(pt);
 }
 
-float Robot::computeError(ofVec2f start, ofVec2f goal) {
+float Robot::computeDeviationError(ofVec2f start, ofVec2f goal) {
 	float pathLength = start.distance(goal);
 	float toStart = location.distance(start);
 	float toGoal = location.distance(goal);

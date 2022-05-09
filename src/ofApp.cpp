@@ -202,9 +202,9 @@ void ofApp::update(){
 	// Write to files
 	// "error____num_nodes____timestamp"
 	std::chrono::duration<double> diff = std::chrono::system_clock::now() - initTime;
-	float error1 = car1->computeError(start1, goal1);
-	float error2 = car2->computeError(start2, goal2);
-	float error3 = car3->computeError(start3, goal3);
+	float error1 = car1->computeDeviationError(start1, goal1);
+	float error2 = car2->computeDeviationError(start2, goal2);
+	float error3 = car3->computeDeviationError(start3, goal3);
 	posErrorFile_1 << error1 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
 	posErrorFile_2 << error2 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
 	posErrorFile_3 << error3 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
