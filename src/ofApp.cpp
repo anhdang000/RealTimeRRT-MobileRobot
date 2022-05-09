@@ -48,7 +48,7 @@ void ofApp::setup() {
 		obst1.push_back(ob);
 		obst2.push_back(ob);
 	}
-	//
+	
 	OBST = new movingObst();
 	ob = OBST;
 	obst1.push_back(ob);
@@ -145,16 +145,16 @@ void ofApp::draw(){
 	if (car1 != NULL) car1->render();
 	if (car2 != NULL) car2->render();
 
-	if (map1 != NULL) {
-		char numNode[255];
-		sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
-		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
-	}
-	
-	char fpsStr[255]; // an array of chars
-	ofSetColor({ 255,0,0 });
-	sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
-	myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
+	//if (map1 != NULL) {
+	//	char numNode[255];
+	//	sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
+	//	myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
+	//}
+	//
+	//char fpsStr[255]; // an array of chars
+	//ofSetColor({ 255,0,0 });
+	//sprintf(fpsStr, "Frame rate: %d", int(ofGetFrameRate()));
+	//myfont.drawString(fpsStr, ofGetWindowWidth() - 140, ofGetWindowHeight() - 25);
 
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -183,7 +183,10 @@ void ofApp::keyPressed(int key){
 	else if (key == 'x') {
 		ofImage img;
 		img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-		img.save("screenshot.png");
+		char name[50];
+		sprintf(name, "screenshots/screen_%d.jpg", std::time(0));
+		std::cout << "Saved screen at: " << name << std::endl;
+		img.save(name);
 	}
 #ifdef manual
 	OBST->move(key);
