@@ -36,21 +36,16 @@ class ofApp : public ofBaseApp{
 		bool updateFlag = true;
 		Environment *map1;
 		SubEnvironment *map2;
-		SubEnvironment1 *map3;
 		Robot *car1;
 		Robot *car2;
-		Robot *car3;
 
 		// Starts and goals
 		ofVec2f start1;
 		ofVec2f goal1;
 		ofVec2f start2;
 		ofVec2f goal2;
-		ofVec2f start3;
-		ofVec2f goal3;
 		list<obstacles*> obst1;
 		list<obstacles*> obst2;
-		list<obstacles*> obst3;
 		movingObst *OBST;
 		int numObs = numStaObst + numMovObst;
 		int currGoalSet = 1;
@@ -67,5 +62,4 @@ class ofApp : public ofBaseApp{
 		std::chrono::system_clock::time_point initTime;
 		std::ofstream posErrorFile_1;
 		std::ofstream posErrorFile_2;
-		std::ofstream posErrorFile_3;
 };

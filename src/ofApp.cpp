@@ -11,7 +11,6 @@ void ofApp::setup() {
 	// Storage files
 	posErrorFile_1.open("bin\\data\\pos_errors_1.txt");
 	posErrorFile_2.open("bin\\data\\pos_errors_2.txt");
-	posErrorFile_3.open("bin\\data\\pos_errors_3.txt");
 
 	// Display
 	ofSetVerticalSync(true);
@@ -27,18 +26,12 @@ void ofApp::setup() {
 	map1 = new Environment(car1->getLocation());
 	map1->targetSet(goal1);
 
-	start2.set(100, 400);
+	start2.set(100, 700);
 	goal2.set(700, 400);
 	car2 = new Robot(start2);
 	map2 = new SubEnvironment(car2->getLocation());
 	map2->targetSet(goal2);
 
-	start3.set(100, 700);
-	goal3.set(700, 400);
-	car3 = new Robot(start3);
-	map3 = new SubEnvironment1(car3->getLocation());
-	map3->targetSet(goal3);
-	
 	// Start time
 	initTime = std::chrono::system_clock::now();
 
@@ -49,7 +42,6 @@ void ofApp::setup() {
 		obstacles *ob = new obstacles(obsLoc[i]);
 		obst1.push_back(ob);
 		obst2.push_back(ob);
-		obst3.push_back(ob);
 	}
 
 	for (unsigned int i = 0; i < numMovObst; i++) {
@@ -57,7 +49,6 @@ void ofApp::setup() {
 		obstacles *ob = OBST;
 		obst1.push_back(ob);
 		obst2.push_back(ob);
-		obst3.push_back(ob);
 	}
 
 	drawAtInit();
@@ -84,9 +75,6 @@ void ofApp::update(){
 	}
 	for (auto i : obst2) {
 		i->move(obst2);
-	}
-	for (auto i : obst3) {
-		i->move(obst3);
 	}
 #endif // automatic
 
@@ -153,20 +141,10 @@ void ofApp::update(){
 		ob = new obstacles(loc);
 		obst1.push_back(ob);
 	}
-	if (car3 != NULL) {
-		loc.set(car3->x(), car3->y());
-		ob = new obstacles(loc);
-		obst1.push_back(ob);
-	}
 
 	// Obstacle 2: assign car3 + car1 as obstacles
 	while (obst2.size() > numObs) {
 		obst2.pop_back();
-	}
-	if (car3 != NULL) {
-		loc.set(car3->x(), car3->y());
-		ob = new obstacles(loc);
-		obst2.push_back(ob);
 	}
 	if (car1 != NULL) {
 		loc.set(car1->x(), car1->y());
@@ -175,19 +153,6 @@ void ofApp::update(){
 	}
 
 	// Obstacle 3: assign car1 + car2 as obstacles
-	while (obst3.size() > numObs) {
-		obst3.pop_back();
-	}
-	if (car1 != NULL) {
-		loc.set(car1->x(), car1->y());
-		ob = new obstacles(loc);
-		obst3.push_back(ob);
-	}
-	if (car2 != NULL) {
-		loc.set(car2->x(), car2->y());
-		ob = new obstacles(loc);
-		obst3.push_back(ob);
-	}
 
 	if (map1 != NULL) {
 		map1->update(car1, obst1);
@@ -195,20 +160,14 @@ void ofApp::update(){
 	if (map2 != NULL) {
 		map2->update(car2, obst2);
 	}
-	if (map3 != NULL) {
-		map3->update(car3, obst3);
-	}
 
 	// Write to files
-	// "error____num_nodes____timestamp"
+	// "x    y    error    num_nodes    timestamp"
 	std::chrono::duration<double> diff = std::chrono::system_clock::now() - initTime;
 	float error1 = car1->computeDeviationError(start1, goal1);
 	float error2 = car2->computeDeviationError(start2, goal2);
-	float error3 = car3->computeDeviationError(start3, goal3);
-	posErrorFile_1 << error1 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
-	posErrorFile_2 << error2 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
-	posErrorFile_3 << error3 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
-
+	posErrorFile_1 << car1->x() << "\t" << car1->y() << "\t" << error1 << "\t" << map1->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_2 << car2->x() << "\t" << car2->y() << "\t" << error2 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
 
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -226,7 +185,6 @@ void ofApp::draw(){
 	ofSetColor({ 150, 50, 25 });
 	ofDrawLine(start1.x, start1.y, goal1.x, goal1.y);
 	ofDrawLine(start2.x, start2.y, goal2.x, goal2.y);
-	ofDrawLine(start3.x, start3.y, goal3.x, goal3.y);
 
 	// Obstacles
 	list<obstacles*>::iterator it;
@@ -236,11 +194,9 @@ void ofApp::draw(){
 
 	if (map1 != NULL) map1->render();
 	if (map2 != NULL) map2->render();
-	if (map3 != NULL) map3->render();
 
 	if (car1 != NULL) car1->render();
 	if (car2 != NULL) car2->render();
-	if (car3 != NULL) car3->render();
 
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -265,7 +221,6 @@ void ofApp::drawAtInit() {
 	ofSetColor({ 150, 50, 25 });
 	ofDrawLine(start1.x, start1.y, goal1.x, goal1.y);
 	ofDrawLine(start2.x, start2.y, goal2.x, goal2.y);
-	ofDrawLine(start3.x, start3.y, goal3.x, goal3.y);
 
 	list<obstacles*>::iterator it;
 	for (it = obst1.begin(); std::distance(obst1.begin(), it) < numObs; it++) {
@@ -274,11 +229,9 @@ void ofApp::drawAtInit() {
 
 	if (map1 != NULL) map1->render();
 	if (map2 != NULL) map2->render();
-	if (map3 != NULL) map3->render();
 
 	if (car1 != NULL) car1->render();
 	if (car2 != NULL) car2->render();
-	if (car3 != NULL) car3->render();
 
 	ofImage img;
 	img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
