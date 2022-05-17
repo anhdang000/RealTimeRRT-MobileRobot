@@ -194,10 +194,9 @@ void ofApp::update(){
 	// Write to files
 	// "error____num_nodes____timestamp"
 	std::chrono::duration<double> diff = std::chrono::system_clock::now() - initTime;
-	posErrorFile_1 << car1->y() - 100 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
-	posErrorFile_2 << car2->y() - 400 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
-	posErrorFile_3 << car3->y() - 700 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
-
+	posErrorFile_1 << car1->x() << "\t" << car1->y() << "\t" << car1->getAngle() << "\t" << car1->y() - 100 << "\t" << map1->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_2 << car2->x() << "\t" << car2->y() << "\t" << car2->getAngle() << "\t" << car2->y() - 400 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_3 << car3->x() << "\t" << car3->y() << "\t" << car3->getAngle() << "\t" << car3->y() - 700 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
 
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();

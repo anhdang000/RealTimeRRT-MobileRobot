@@ -37,6 +37,8 @@ public:
 	ofVec2f getLocation() { return location; }
 	//Return Color of Robot
 	ofColor getColor() { return color; }
+	// Return orientation angle
+	float getAngle() { return ofRadToDeg(atan2(velocity.y, velocity.x)); }
 	void fillEnvironment(const list<obstacles*> obst,list<Nodes> &node);
 	void updateEnvironment(list<Nodes> &node, obstacles *obst);
 	//--------------------------------------------------------------Variables
