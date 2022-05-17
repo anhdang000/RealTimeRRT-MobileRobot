@@ -200,14 +200,14 @@ void ofApp::update(){
 	}
 
 	// Write to files
-	// "error____num_nodes____timestamp"
+	// "x    y    orientation[degree]    error    num_nodes    timestamp"
 	std::chrono::duration<double> diff = std::chrono::system_clock::now() - initTime;
 	float error1 = car1->computeDeviationError(start1, goal1);
 	float error2 = car2->computeDeviationError(start2, goal2);
 	float error3 = car3->computeDeviationError(start3, goal3);
-	posErrorFile_1 << error1 << "\t" << map1->numofnode() << "\t" << diff.count()<< "\n";
-	posErrorFile_2 << error2 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
-	posErrorFile_3 << error3 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_1 << car1->x() << "\t" << car1->y() << "\t" << car1->getAngle() << "\t" << error1 << "\t" << map1->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_2 << car2->x() << "\t" << car2->y() << "\t" << car2->getAngle() << "\t" << error2 << "\t" << map2->numofnode() << "\t" << diff.count() << "\n";
+	posErrorFile_3 << car3->x() << "\t" << car3->y() << "\t" << car3->getAngle() << "\t" << error3 << "\t" << map3->numofnode() << "\t" << diff.count() << "\n";
 
 
 #ifdef CLK
