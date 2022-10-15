@@ -40,7 +40,7 @@ public:
 	ofxPanel gui;
 private:
 	//--------------------------------------------------------------Variables
-protected:
+public:
 	//--------------------------------------------------------------Variables
 	std::list<Nodes> nodes;
 	//std::list<obstacles> obst;
