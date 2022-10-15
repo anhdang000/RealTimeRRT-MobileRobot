@@ -32,6 +32,7 @@ public:
 	// Render method draw nodes in Environment.
 	void render();
 	float numofnode() { return nodes.size(); };
+	ofVec2f getNextTarget();
 	void renderGrid();
 	//--------------------------------------------------------------Variables
 	bool grid = false;
@@ -79,6 +80,12 @@ inline void Environment::setup(ofVec2f _start)
 	rtrrtstar.goalFound = false;
 }
 
+inline ofVec2f Environment::getNextTarget() {
+	if (rtrrtstar.root) {
+		return rtrrtstar.root->location;
+	}
+	else return ofVec2f(0, 0);
+}
 inline void Environment::update(Robot *car,list<obstacles*> obst) {
 	if (car->getLocation().distance(rtrrtstar.goal) < converge)
 		planner = false;

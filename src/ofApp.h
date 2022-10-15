@@ -4,6 +4,7 @@
 #include "opencv2/opencv.hpp"
 #include <opencv2/aruco.hpp>
 #include <filesystem>
+#include <fstream>
 #include "Environment.h"
 #include "SubEnvironment.h"
 #include <thread>
@@ -32,21 +33,24 @@ class ofApp : public ofBaseApp{
 	private:
 		ofTrueTypeFont myfont;
 		bool updateFlag = true;
-		Environment *map1;
-		SubEnvironment *map2;
-		Robot *car1;
-		Robot *car2;
-		list<obstacles*> obst1;
-		list<obstacles*> obst2;
+		Environment *map;
+		Robot *car;
+		list<obstacles*> obst;
 		movingObst *OBST;
 		maze *wall;
 		double updateTime = 0, drawTime = 0;
 
-		string vid_source = "bin\\data\\simulation_AR_0.avi";
+		cv::Mat cameraMatrix = (cv::Mat1d(3, 3) << 662.197, 0, 324.408, 0, 662.952, 238.251, 0, 0, 1);
+		cv::Mat distCoeffs = (cv::Mat1d(1, 5) << 0.03825588, 0.14136728, -0.01338866, -0.00669156, -1.08208082);
+
+		string vid_source = "bin\\data\\sample_video_0.avi";
 		cv::VideoCapture vid_capture = cv::VideoCapture(vid_source);
 		int frameIdx = 0;
+		float markerSize = 8;
 		cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
 		cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
 		vector<vector<cv::Point2f>> markerCorners, rejectedCandidates;
 		vector<int> markerIds;
+
+		std::ofstream transfer_data;
 };

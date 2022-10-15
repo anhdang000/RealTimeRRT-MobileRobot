@@ -14,12 +14,7 @@ void ofApp::setup() {
 	ofBackground(200,200,200,200);
 	myfont.loadFont("Roboto-Regular.ttf", 10);
 
-	for (unsigned int i = 0; i < numberOfobst; i++)
-	{
-		obstacles *ob = new obstacles();
-		obst1.push_back(ob);
-		obst2.push_back(ob);
-	}
+	transfer_data.open("bin\\data\\transfer_data.txt");
 	
 #ifdef readARMarkers
 	std::thread t1(&ofApp::readAR, this);
@@ -42,42 +37,42 @@ void ofApp::readAR() {
 	while (true) {
 		bool isSuccess = vid_capture.read(frame);
 		if (isSuccess) {
-			// Process AR markers
-			cv::aruco::detectMarkers(frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
+			std::vector<int> ids;
+			std::vector<std::vector<cv::Point2f>> corners;
+			cv::aruco::detectMarkers(frame, dictionary, corners, ids);
 
-			// Compute obstacles' positions
-			obst1.clear();
-			obst2.clear();
+			// Objects: robot, goal, obstacles, goods
+			obst.clear();
 			ofVec2f loc;
 			obstacles *ob;
-			for (auto markerCorner : markerCorners) {
-				loc.set(markerCorner[0].x, markerCorner[0].y);
-				ob = new obstacles(loc);
-				obst1.push_back(ob);
-				obst2.push_back(ob);
-			}
 
-			// Set mutual obstacle
-			if (car1 != NULL) {
-				loc.set(car1->x(), car1->y());
-				ob = new obstacles(loc);
-				obst2.push_back(ob);
-			}
-			if (car2 != NULL) {
-				loc.set(car2->x(), car2->y());
-				ob = new obstacles(loc);
-				obst1.push_back(ob);
-			}
+			if (ids.size() > 0) {
+				std::vector<cv::Vec3d> rvecs, tvecs;
+				cv::aruco::estimatePoseSingleMarkers(corners, markerSize, cameraMatrix, distCoeffs, rvecs, tvecs);
+				
+				for (int i = 0; i < ids.size(); i++) {
+					// Robot
+					if (ids[i] == 33) {
+						ofVec2f r_pos(tvecs[i][0], tvecs[i][1]);
+						float r_angle = rvecs[i][2];
+						
+						if (car == NULL) {
+							car = new Robot(r_pos);
+							map = new Environment(car->getLocation());
+						}
 
-			// For debugging
-			/*cv::Mat outputImage = frame.clone();
-			cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
-			char fileName[50];
-			sprintf(fileName, "bin\\data\\frames\\frame_%d.jpg", frameIdx);
-			std::cout << "Writing AR results in: " << fileName << std::endl;
-			cv::imwrite(fileName, outputImage);*/
-
-			// frameIdx++;
+						float target_angle = atan2(map->getNextTarget().y - r_pos.y, map->getNextTarget().x - r_pos.x);
+						std::cout << "Angle Diff: " << target_angle - r_angle << std::endl;
+						float dist = sqrt(pow(map->getNextTarget().x - r_pos.x, 2) + pow(map->getNextTarget().y - r_pos.y, 2) * 1.0);
+						transfer_data << dist << "\t" << target_angle - r_angle << "\n";
+					}
+					else if (ids[i] == 50) {
+						ofVec2f goal_pos(tvecs[i][0], tvecs[i][1]);
+						std::cout << goal_pos << std::endl;
+						if (car != NULL) map->targetSet(goal_pos);
+					}
+				}
+			}
 		}
 		else {
 			vid_capture.open(vid_source);
@@ -94,15 +89,12 @@ void ofApp::update(){
 #endif // DEBUG
 
 #ifdef automatic
-	for (auto i : obst1) {
-		i->move(obst1);
+	for (auto i : obst) {
+		i->move(obst);
 	}
 #endif // automatic
-	if (map1 != NULL) {
-		map1->update(car1, obst1);
-	}
-	if (map2 != NULL) {
-		map2->update(car2, obst2);
+	if (map != NULL) {
+		map->update(car, obst);
 	}
 #ifdef CLK
 	auto end = std::chrono::steady_clock::now();
@@ -118,36 +110,25 @@ void ofApp::draw(){
 #endif // DEBUG
 	
 	list<obstacles*>::iterator it;
-	if (car2 != NULL && obst1.size() > 0) {
-		for (it = obst1.begin(); std::distance(it, obst1.end()) > 1; it++) {
-			(*it)->render();
-		}
+	for (it = obst.begin(); std::distance(it, obst.end()) > 0; it++) {
+		(*it)->render();
 	}
 
-	if (map1 != NULL) map1->render();
-	if (map2 != NULL) map2->render();
-	if (car1 != NULL) car1->render();
-	if (car2 != NULL) car2->render();
+	if (map != NULL) map->render();
+	if (car != NULL) car->render();
 
-	if (map1 != NULL) {
+	if (map != NULL) {
 		char numNode[255];
 		ofSetColor({ 234,97,50 });
-		sprintf(numNode, "Number of nodes: %d", int(map1->numofnode()));
+		sprintf(numNode, "Number of nodes: %d", int(map->numofnode()));
 		myfont.drawString(numNode, ofGetWindowWidth() - 140, ofGetWindowHeight() - 10);
 	}
 	
-	if (car1 != NULL) {
-		char car1Infos[255];
+	if (car != NULL) {
+		char carInfos[255];
 		ofSetColor({ 9, 102, 139 });
-		sprintf(car1Infos, "Robot 1: (x, y) = (%.2f, %.2f); orientation = %.2f", car1->x(), car1->y(), car1->getAngle());
-		myfont.drawString(car1Infos, 50, ofGetWindowHeight() - 30);
-	}
-
-	if (car2 != NULL) {
-		char car2Infos[255];
-		ofSetColor({ 9, 139, 50 });
-		sprintf(car2Infos, "Robot 2: (x, y) = (%.2f, %.2f); orientation = %.2f", car2->x(), car2->y(), car2->getAngle());
-		myfont.drawString(car2Infos, 50, ofGetWindowHeight() - 10);
+		sprintf(carInfos, "Robot 1: (x, y) = (%.2f, %.2f); orientation = %.2f", car->x(), car->y(), car->getAngle());
+		myfont.drawString(carInfos, 50, ofGetWindowHeight() - 30);
 	}
 
 	char fpsStr[255]; // an array of chars
@@ -177,7 +158,7 @@ void ofApp::keyPressed(int key){
 	}
 	else if(key=='g')
 	{
-		map1->grid = !map1->grid;
+		map->grid = !map->grid;
 	}
 	else if (key == 'x') {
 		ofImage img;
@@ -209,21 +190,14 @@ void ofApp::mousePressed(int x, int y, int button){
 	ofVec2f loc;
 	loc.set(x, y);
 	if (button == 0) {
-		if (car1 != NULL) {
-			map1->targetSet(loc);
-		}
-		if (car2 != NULL) {
-			map2->targetSet(loc);
+		if (car != NULL) {
+			map->targetSet(loc);
 		}
 	}
 	else if (button == 2) {
-		if (car1 == NULL){
-			car1 = new Robot(loc);
-			map1 = new Environment(car1->getLocation());
-		}
-		else if (car2 == NULL) {
-			car2 = new Robot(loc);
-			map2 = new SubEnvironment(car2->getLocation());
+		if (car == NULL){
+			car = new Robot(loc);
+			map = new Environment(car->getLocation());
 		}
 		
 	}
