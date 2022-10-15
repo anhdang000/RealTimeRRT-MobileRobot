@@ -40,8 +40,8 @@ class ofApp : public ofBaseApp{
 		maze *wall;
 		double updateTime = 0, drawTime = 0;
 
-		cv::Mat cameraMatrix = (cv::Mat1d(3, 3) << 662.197, 0, 324.408, 0, 662.952, 238.251, 0, 0, 1);
-		cv::Mat distCoeffs = (cv::Mat1d(1, 5) << 0.03825588, 0.14136728, -0.01338866, -0.00669156, -1.08208082);
+		cv::Mat cameraMatrix = (cv::Mat1d(3, 3) << 675.63756292, 0, 303.29162957, 0, 673.58562828, 236.53021328, 0, 0, 1);
+		cv::Mat distCoeffs = (cv::Mat1d(1, 5) << -0.01794233, -0.61241083, 0.00416962, -0.00497555, 2.4446322);
 
 		string vid_source = "bin\\data\\sample_video_0.avi";
 		cv::VideoCapture vid_capture = cv::VideoCapture(vid_source);
